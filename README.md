@@ -26,3 +26,4 @@ for cookie, not allow localstorage....
 
 ### vue-i18n
 for multi-language# nekoringo-ui
+# nekoringo-ui
