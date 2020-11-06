@@ -92,5 +92,9 @@
     "message": {
       "create_confirm": ""
     }
-  }
+  },
+  "home": "Home",
+  "signin": "Sign In",
+  "signout": "Sign Out",
+  "category": "Category"
 }

@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/components/Auth/Login'
 import Home from '@/components/Main/Home'
+import Pub from '@/components/Pub/Pub'
 
 Vue.use(Router)
 
@@ -26,7 +27,8 @@ export default new Router({
     },
     {
       path: '/pub/:id',
-      name: 'Pub'
+      name: 'Pub',
+      component: Pub
     }
   ]
 })
