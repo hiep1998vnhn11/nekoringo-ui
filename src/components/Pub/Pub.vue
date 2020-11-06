@@ -1,5 +1,6 @@
 <template>
   <v-container>
+    {{ currentUser }} {{ paramPub }}
     <v-skeleton-loader
       v-if="loading"
       class="mx-auto"
@@ -124,7 +125,10 @@ export default {
   },
   watch: {
     // call again the method if the route changes
-    $route: 'fetchData'
+    $route: 'fetchData',
+    test: function() {
+      this.$router.push({ params: { id: this.test } })
+    }
   }
 }
 </script>

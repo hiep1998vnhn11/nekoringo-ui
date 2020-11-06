@@ -96,5 +96,12 @@
   "home": "Home",
   "signin": "Sign In",
   "signout": "Sign Out",
-  "category": "Category"
+  "category": "Category",
+  "Pub Name:": "Pub Name:",
+  "Evaluation:": "Evaluation:",
+  "Address:": "Address:",
+  "Phone Number:": "Phone Number:",
+  "Email:": "Email:",
+  "Introduce": "Introduce",
+  "Business Hours:": "Business Hours"
 }

@@ -36,7 +36,8 @@ const actions = {
   async getUser({ commit, state }) {
     state.setHeader()
     const response = await axios.post('/auth/me')
-    commit('SET_CURRENT_USER', response.data.data)
+    console.log(response)
+    commit('SET_CURRENT_USER', response.data)
   },
   async logout(context) {
     if (context.getters.isLoggedIn) {

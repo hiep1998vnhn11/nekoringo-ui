@@ -43,58 +43,13 @@
             label="Password"
             required
           ></v-text-field>
-          <div class="text-left">
-            <v-dialog
-              ref="dialog"
-              v-model="birthDayDialog"
-              :return-value.sync="birthDay"
-              persistent
-              width="290px"
-            >
-              <template v-slot:activator="{ on, attrs }">
-                <v-text-field
-                  v-model="birthDay"
-                  :label="$t('user.message.register.birthday')"
-                  prepend-icon="mdi-calendar"
-                  readonly
-                  v-bind="attrs"
-                  v-on="on"
-                ></v-text-field>
-              </template>
-              <v-date-picker v-model="birthDay" scrollable>
-                <v-spacer></v-spacer>
-                <v-btn text color="primary" @click="birthDayDialog = false">
-                  Cancel
-                </v-btn>
-                <v-btn
-                  text
-                  color="primary"
-                  @click="$refs.dialog.save(birthDay)"
-                >
-                  OK
-                </v-btn>
-              </v-date-picker>
-            </v-dialog>
-            <v-row>
-              <v-col cols="3">
-                {{ $t('user.message.register.gender') }}
-              </v-col>
-              <v-radio-group v-model="gender" :rules="genderRules" row>
-                <v-radio
-                  :label="$t('user.message.register.male')"
-                  value="male"
-                ></v-radio>
-                <v-radio
-                  :label="$t('user.message.register.female')"
-                  value="female"
-                ></v-radio>
-                <v-radio
-                  :label="$t('user.message.register.other')"
-                  value="other"
-                ></v-radio>
-              </v-radio-group>
-            </v-row>
-          </div>
+          <v-text-field
+            v-model="password"
+            type="password"
+            :rules="passwordRules"
+            label="Password Confirm"
+            required
+          ></v-text-field>
           <v-divider class="mx-4"></v-divider>
         </v-form>
         <br />

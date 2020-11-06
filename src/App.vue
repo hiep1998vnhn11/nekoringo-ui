@@ -15,10 +15,19 @@
       <v-btn text x-large class="text-capitalize">
         {{ $t('category') }}
       </v-btn>
-      <v-btn text x-large class="text-capitalize">
+      <v-btn v-if="isLoggedIn" text x-large class="text-capitalize">
+        {{ currentUser.name }}
+      </v-btn>
+      <v-btn v-else text x-large class="text-capitalize">
         {{ $t('signin') }}
       </v-btn>
-      <v-btn text x-large class="text-capitalize" @click="logout">
+      <v-btn
+        v-if="isLoggedIn"
+        text
+        x-large
+        class="text-capitalize"
+        @click="logout"
+      >
         {{ $t('signout') }}
       </v-btn>
     </v-app-bar>
@@ -37,7 +46,11 @@ export default {
     if (!this.currentUser && this.isLoggedIn) this.getUser()
   },
   methods: {
-    ...mapActions('user', ['logout', 'getUser'])
+    ...mapActions('user', ['logout', 'getUser']),
+    async signOut() {
+      await this.logout()
+      this.$router.push({ name: 'Login' })
+    }
   }
 }
 </script>
