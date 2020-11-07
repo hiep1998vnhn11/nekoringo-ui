@@ -3,7 +3,14 @@
     <v-app-bar color="elevation-1" app>
       <v-toolbar-title>Application</v-toolbar-title>
       <v-spacer />
-      <v-btn text x-large class="text-capitalize">
+      <v-btn
+        text
+        x-large
+        class="text-capitalize"
+        exact
+        active-class="primary--text"
+        :to="{ name: 'Home' }"
+      >
         {{ $t('home') }}
       </v-btn>
       <v-btn text x-large class="text-capitalize">
@@ -39,8 +46,16 @@
             class="mx-auto"
           >
             <v-container>
-              <v-btn text block class="text-capitalize">
+              <v-btn
+                text
+                block
+                class="text-capitalize"
+                :to="{ name: 'Profile' }"
+              >
                 {{ $t('Profile') }}
+              </v-btn>
+              <v-btn text block class="text-capitalize">
+                {{ $t('add pub') }}
               </v-btn>
               <v-btn text block class="text-capitalize" @click="signOut">
                 {{ $t('signout') }}
@@ -50,7 +65,7 @@
         </v-expand-transition>
       </div>
     </v-app-bar>
-    <v-main>
+    <v-main class="grey lighten-3">
       <router-view />
     </v-main>
   </v-app>
