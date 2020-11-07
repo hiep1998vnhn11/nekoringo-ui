@@ -17,7 +17,7 @@
         {{ $t('category') }}
       </v-btn>
       <v-btn text x-large class="text-capitalize">
-        {{ $t('category') }}
+        {{ $t('About') }}
       </v-btn>
       <v-btn
         v-if="isLoggedIn"
@@ -54,8 +54,13 @@
               >
                 {{ $t('Profile') }}
               </v-btn>
-              <v-btn text block class="text-capitalize">
-                {{ $t('add pub') }}
+              <v-btn
+                text
+                block
+                class="text-capitalize"
+                :to="{ name: 'NewPub' }"
+              >
+                {{ $t('create a new pub') }}
               </v-btn>
               <v-btn text block class="text-capitalize" @click="signOut">
                 {{ $t('signout') }}

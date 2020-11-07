@@ -4,7 +4,7 @@ import Login from '@/components/Auth/Login'
 import Home from '@/components/Main/Home'
 import Pub from '@/components/Pub/Pub'
 import Profile from '@/components/Profile/Profile'
-import NewPub from '@/component/Pub/NewPub'
+import NewPub from '@/components/Pub/NewPub'
 
 Vue.use(Router)
 
@@ -34,7 +34,7 @@ export default new Router({
       component: Pub
     },
     {
-      path: '/pub/new',
+      path: '/new/pub',
       name: 'NewPub',
       component: NewPub
     }
