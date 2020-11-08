@@ -1,30 +1,16 @@
-# First init for all project Vuejs 
-Many plugin and dependencies are used:
-### Vuetify.js
-https://vuetifyjs.com/en/
-component ex:
+# Nekoringo
+
+## Usage
+
+Change
+
 ```
-<v-app>
-<v-container>
-<v-app-bar>
-...
+VUE_APP_SERVER_BASE_URL: '"http://localhost:8000/api"'
 ```
 
-### vuex
-https://vuex.vuejs.org/guide/
-auto import any module from '@/store/modules' folder
+at config/dev.env.js
 
-### vue router
-https://router.vuejs.org/
-all router of project
-
-### lodash
-everything you need to work with string
-
-### vue-cookie
-for cookie, not allow localstorage....
-
-### vue-i18n
-for multi-language# nekoringo-ui
-# nekoringo-ui
-# nekoringo-ui
+```
+yarn install
+yarn tart
+```
