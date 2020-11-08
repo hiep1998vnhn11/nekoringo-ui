@@ -2,12 +2,14 @@ import axios from 'axios'
 
 const state = {
   paramPub: null,
-  myPub: [],
+  myPubs: [],
   pubs: []
 }
 
 const getters = {
-  paramPub: state => state.paramPub
+  paramPub: state => state.paramPub,
+  myPubs: state => state.myPubs,
+  pubs: state => state.pubs
 }
 
 const actions = {

@@ -1,6 +1,5 @@
 <template>
   <v-container>
-    {{ currentUser }} {{ paramPub }}
     <v-skeleton-loader
       v-if="loading"
       class="mx-auto"

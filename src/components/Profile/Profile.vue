@@ -12,7 +12,7 @@
         </v-list-item-content>
       </v-list-item>
       <v-divider />
-      <v-card-text>
+      <v-card-text v-if="!!currentUser">
         <v-row>
           <v-col cols="9">
             <v-simple-table>
@@ -95,6 +95,27 @@
         </v-row>
       </v-card-text>
     </v-card>
+    <v-card :loading="loadingPub" tile elevation="0" outlined>
+      <v-card-title>
+        My Pubs
+      </v-card-title>
+      <v-card-text>
+        <v-row>
+          <v-col v-for="pub in myPubs" :key="pub.name">
+            <v-card
+              tile
+              width="200"
+              :to="{ name: 'Pub', params: { id: pub.id } }"
+            >
+              <v-img height="200" :src="pub.home_photo_path" />
+              <v-card-actions>
+                {{ pub.name }}
+              </v-card-actions>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
   </v-container>
 </template>
 
@@ -102,13 +123,20 @@
 import { mapGetters, mapActions } from 'vuex'
 import axios from 'axios'
 export default {
-  computed: mapGetters('user', ['currentUser']),
+  computed: {
+    ...mapGetters('user', ['currentUser']),
+    ...mapGetters('pub', ['myPubs'])
+  },
+  mounted() {
+    this.fetchData()
+  },
   data() {
     return {
       image: null,
       url: null,
       loading: false,
       error: null,
+      loadingPub: false,
       name: '',
       phone: '',
       changeName: false,
@@ -117,6 +145,17 @@ export default {
   },
   methods: {
     ...mapActions('user', ['getUser']),
+    ...mapActions('pub', ['getMyPub']),
+    async fetchData() {
+      this.loadingPub = true
+      this.error = null
+      try {
+        await this.getMyPub()
+      } catch (err) {
+        this.error = err.toString()
+      }
+      this.loadingPub = false
+    },
     onFileChange: function() {
       // Reference to the DOM input element
       // Ensure that you have a file before attempting to read it
