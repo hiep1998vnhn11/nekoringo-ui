@@ -8,7 +8,7 @@
       </v-card-title>
       <v-card-text>
         (Hint: (*) is required!)
-        <v-form ref="form" v-model="valid" lazy-validation>
+        <v-form ref="form" lazy-validation>
           <v-row>
             <v-col cols="7">
               <v-text-field
@@ -168,6 +168,7 @@ export default {
     onSubmit() {
       this.loading = true
       this.error = null
+      console.log(123)
       try {
         let formData = new FormData()
         formData.append('name', this.name)

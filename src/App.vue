@@ -20,7 +20,7 @@
         {{ $t('About') }}
       </v-btn>
       <v-btn
-        v-if="isLoggedIn"
+        v-if="isLoggedIn && !!currentUser"
         @click="expand = true"
         text
         x-large
