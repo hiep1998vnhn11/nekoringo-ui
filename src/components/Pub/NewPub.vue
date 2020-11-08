@@ -1,5 +1,6 @@
 <template>
   <v-container>
+    {{ error }}
     <v-card elevation="0" outlined tile>
       <v-card-title>
         <v-spacer />
@@ -28,6 +29,12 @@
                 v-model="phone"
                 :counter="12"
                 :label="`${$t('Phone number')} *`"
+                required
+              ></v-text-field>
+              <v-text-field
+                v-model="email"
+                :counter="55"
+                :label="`${$t('Main email')} *`"
                 required
               ></v-text-field>
             </v-col>
@@ -117,7 +124,8 @@ export default {
     checkbox: false,
     preview: false,
     loading: false,
-    error: null
+    error: null,
+    email: ''
   }),
   computed: {
     src() {
@@ -133,6 +141,8 @@ export default {
         this.address.length > 120 ||
         !this.phone ||
         this.phone.length > 12 ||
+        !this.email ||
+        this.email.length > 55 ||
         !this.image ||
         !this.checkbox
       ) {
@@ -165,10 +175,9 @@ export default {
       this.checkbox = false
       this.$router.push({ name: 'Home' })
     },
-    onSubmit() {
+    async onSubmit() {
       this.loading = true
       this.error = null
-      console.log(123)
       try {
         let formData = new FormData()
         formData.append('name', this.name)
@@ -176,8 +185,10 @@ export default {
         formData.append('image', this.image)
         formData.append('address', this.address)
         formData.append('description', this.description)
+        formData.append('main_email', this.email)
         formData.append('video_path', this.videoPath)
         formData.append('map_path', this.mapPath)
+        await this.createPub(formData)
       } catch (err) {
         this.error = err.toString()
       }

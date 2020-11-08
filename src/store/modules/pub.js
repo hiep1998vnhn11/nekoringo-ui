@@ -2,6 +2,7 @@ import axios from 'axios'
 
 const state = {
   paramPub: null,
+  myPub: [],
   pubs: []
 }
 
@@ -22,7 +23,18 @@ const actions = {
         'Content-Type': 'multipart/form-data'
       }
     })
+    console.log(response)
     commit('CREATE_PUB', response.data.data)
+  },
+  async getAllPub({ commit }) {
+    let url = '/user/pub/store'
+    const response = await axios.get(url)
+    commit('SET_ALL_PUB', response.data.data)
+  },
+  async getMyPub({ commit }) {
+    let url = '/user/pub/store_my_pub'
+    const response = await axios.get(url)
+    commit('SET_MY_PUB', response.data.data)
   }
 }
 
@@ -32,6 +44,12 @@ const mutations = {
   },
   CREATE_PUB: function(state, pub) {
     state.pubs.unshift(pub)
+  },
+  SET_ALL_PUB: function(state, pubs) {
+    state.pubs = pubs
+  },
+  SET_MY_PUB: function(state, pubs) {
+    state.myPubs = pubs
   }
 }
 
