@@ -12,5 +12,5 @@ at config/dev.env.js
 
 ```
 yarn install
-yarn tart
+yarn start
 ```
