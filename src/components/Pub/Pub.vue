@@ -149,7 +149,7 @@
     </v-row>
 
     <v-dialog width="800" v-model="dialog">
-      <v-card>
+      <v-card :loading="loadingRating">
         <v-card-title>
           {{ $t('Write review for') }} {{ paramPub.name }}
         </v-card-title>
@@ -207,10 +207,12 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import axios from 'axios'
 export default {
   data() {
     return {
       loading: false,
+      loadingRating: false,
       error: null,
       dialog: false,
       content: '',
@@ -267,7 +269,28 @@ export default {
         reader.readAsDataURL(this.image)
       }
     },
-    async onSave() {},
+    async onSave() {
+      this.loadingRating = true
+      this.error = null
+      try {
+        let url = `/user/pub/${this.paramPub.id}/rating/create`
+        var formData = new FormData()
+        formData.append('rate', this.rating)
+        formData.append('content', this.content)
+        if (this.image) formData.append('image', this.image)
+        const response = await axios.post(url, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        console.log(response)
+        this.fetchData()
+      } catch (err) {
+        this.error = err.toString()
+      }
+      this.loadingRating = false
+      this.dialog = false
+    },
     onCancel() {
       this.content = ''
       this.rating = 0
