@@ -8,10 +8,12 @@ import store from '@/store'
 import i18n from '@/plugins/i18n'
 import mixin from '@/utils/mixin'
 import axios from 'axios'
+import VueSweetalert2 from 'vue-sweetalert2'
 
 Vue.config.productionTip = false
 Vue.mixin(mixin)
 axios.defaults.baseURL = process.env.VUE_APP_SERVER_BASE_URL
+Vue.use(VueSweetalert2)
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {

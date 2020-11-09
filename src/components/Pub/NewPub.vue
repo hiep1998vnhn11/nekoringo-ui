@@ -189,7 +189,20 @@ export default {
         formData.append('video_path', this.videoPath)
         formData.append('map_path', this.mapPath)
         await this.createPub(formData)
+        this.$swal({
+          icon: 'success',
+          title: 'Success',
+          text: `Create ${this.name} successfully!`
+        })
+        this.name = this.phone = this.address = this.description = ''
+        this.email = this.videoPath = this.mapPath = ''
+        this.image = this.imageUrl = null
       } catch (err) {
+        this.$swal({
+          icon: 'error',
+          title: 'Error',
+          text: err.toString()
+        })
         this.error = err.toString()
       }
       this.loading = false

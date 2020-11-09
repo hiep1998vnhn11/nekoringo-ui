@@ -28,10 +28,9 @@
           <v-card-text class="text-body-1">
             <v-row no-gutters>
               <v-col cols="6">
-                <p>{{ $t('Pub Name:') }} {{ paramPub.name }}</p>
-                <p>{{ $t('Evaluation:') }}</p>
-                <p>{{ $t('Address:') }}</p>
-                <p>{{ $t('Business Hours:') }}</p>
+                <p>{{ $t('Name:') }} {{ paramPub.name }}</p>
+                <p>{{ $t('Email:') }} {{ paramPub.main_email }}</p>
+                <p>{{ $t('Address:') }} {{ paramPub.address }}</p>
                 <p>{{ $t('Phone Number:') }} {{ paramPub.phone_number }}</p>
               </v-col>
               <v-col>
@@ -44,7 +43,6 @@
                   <v-icon size="15" color="primary">mdi-pencil</v-icon>
                 </v-btn>
                 <p>{{ $t('Email:') }} {{ paramPub.main_email }}</p>
-                <p>{{ $t('Address:') }}</p>
               </v-col>
             </v-row>
           </v-card-text>
@@ -284,9 +282,19 @@ export default {
           }
         })
         console.log(response)
+        this.$swal({
+          icon: 'success',
+          title: 'Success',
+          text: 'Create rating successfully!'
+        })
         this.fetchData()
       } catch (err) {
         this.error = err.toString()
+        this.$swal({
+          icon: 'error',
+          title: 'Error',
+          text: this.error
+        })
       }
       this.loadingRating = false
       this.dialog = false
