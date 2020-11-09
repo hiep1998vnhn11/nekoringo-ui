@@ -85,6 +85,123 @@
         ></iframe>
       </v-col>
     </v-row>
+    <v-divider />
+    <v-row>
+      <v-col cols="2">
+        <v-card>
+          <v-card-text>
+            <v-rating
+              v-model="review.evaluation"
+              color="yellow darken-3"
+              background-color="grey darken-1"
+              empty-icon="$ratingFull"
+              small
+              readonly
+            ></v-rating>
+          </v-card-text>
+          <v-divider />
+          <v-card-actions>
+            123 comments
+          </v-card-actions>
+        </v-card>
+      </v-col>
+      <v-col cols="10">
+        <v-card tile outlined elevation="0">
+          <v-toolbar color="elevation-0" class="text-h6" dense>
+            <v-spacer />
+            {{ $t('Review') }}
+            <v-spacer />
+            <v-btn text outlined class="text-capitalize" @click="dialog = true">
+              Write an review
+            </v-btn>
+          </v-toolbar>
+          <v-divider />
+          <v-card-text>
+            <v-card tile elevation="0" outlined>
+              <v-toolbar dense color="elevation-0" class="text-body-1">
+                <v-avatar size="30" class="mr-2 avatar-outlined">
+                  <v-img :src="review.user_url" />
+                </v-avatar>
+                {{ review.user_name }}
+                <v-spacer />
+                <v-rating
+                  v-model="review.evaluation"
+                  color="yellow darken-3"
+                  background-color="grey darken-1"
+                  empty-icon="$ratingFull"
+                  small
+                  readonly
+                ></v-rating>
+              </v-toolbar>
+              <v-card-text>
+                {{ review.content }}
+                <v-img
+                  class="ml-5"
+                  height="200"
+                  width="300"
+                  :src="review.image_url"
+                />
+              </v-card-text>
+            </v-card>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <v-dialog width="800" v-model="dialog">
+      <v-card>
+        <v-card-title>
+          {{ $t('Write review for') }} {{ paramPub.name }}
+        </v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col cols="6">
+              {{ $t('Evaluation:') }}
+              <v-rating
+                v-model="rating"
+                color="yellow darken-3"
+                background-color="grey darken-1"
+                empty-icon="$ratingFull"
+                small
+              ></v-rating>
+              <v-textarea
+                class="mt-2 mb-n5"
+                :label="$t('Content')"
+                auto-grow
+                rows="3"
+                row-height="15"
+                v-model="content"
+              ></v-textarea>
+            </v-col>
+            <v-col cols="6">
+              <v-file-input
+                accept="image/png, image/jpeg, image/bmp"
+                :placeholder="$t('Choose your image')"
+                prepend-icon="mdi-camera"
+                :label="$t('Upload')"
+                v-model="image"
+                @change="onFileChange"
+              ></v-file-input>
+              <v-img height="200" :src="imageUrl" />
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-divider />
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            :disabled="disable"
+            class="primary text-capitalize"
+            @click="onSave"
+          >
+            {{ $t('Write') }}
+          </v-btn>
+          <v-btn class="error text-capitalize" @click="onCancel">
+            {{ $t('Cancel') }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -94,7 +211,20 @@ export default {
   data() {
     return {
       loading: false,
-      error: null
+      error: null,
+      dialog: false,
+      content: '',
+      image: null,
+      imageUrl: null,
+      rating: 0,
+      review: {
+        user_name: 'Hiep',
+        user_url:
+          'https://cdn.tgdd.vn/Files/2019/01/01/1142002/s8ori_800x600.jpg',
+        content: 'Ngon',
+        image_url: 'https://www.hoteljob.vn/files/Anh-HTJ-Hong/pub-la-gi-1.png',
+        evaluation: 5
+      }
     }
   },
   computed: {
@@ -104,6 +234,9 @@ export default {
       return this.currentUser
         ? this.currentUser.id === this.paramPub.user_id
         : false
+    },
+    disable() {
+      return !this.content || !this.rating
     }
   },
   methods: {
@@ -117,6 +250,29 @@ export default {
         this.error = err.toString()
       }
       this.loading = false
+    },
+    onFileChange: function() {
+      // Reference to the DOM input element
+      // Ensure that you have a file before attempting to read it
+      if (this.image) {
+        // create a new FileReader to read this image and convert to base64 format
+        var reader = new FileReader()
+        // Define a callback function to run, when FileReader finishes its job
+        reader.onload = e => {
+          // Note: arrow function used here, so that "this.imageData" refers to the imageData of Vue component
+          // Read image as base64 and set to imageData
+          this.imageUrl = e.target.result
+        }
+        // Start the reader job - read file as a data url (base64 format)
+        reader.readAsDataURL(this.image)
+      }
+    },
+    async onSave() {},
+    onCancel() {
+      this.content = ''
+      this.rating = 0
+      this.image = this.imageUrl = null
+      this.dialog = false
     }
   },
   mounted() {
@@ -124,10 +280,7 @@ export default {
   },
   watch: {
     // call again the method if the route changes
-    $route: 'fetchData',
-    test: function() {
-      this.$router.push({ params: { id: this.test } })
-    }
+    $route: 'fetchData'
   }
 }
 </script>
