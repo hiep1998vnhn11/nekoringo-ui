@@ -31,7 +31,13 @@
         </v-avatar>
         {{ currentUser.name }}
       </v-btn>
-      <v-btn v-else text x-large class="text-capitalize">
+      <v-btn
+        v-else
+        text
+        x-large
+        class="text-capitalize"
+        :to="{ name: 'Login' }"
+      >
         {{ $t('signin') }}
       </v-btn>
       <div class="show-noti-app-bar">

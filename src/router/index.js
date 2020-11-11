@@ -26,7 +26,10 @@ export default new Router({
     {
       path: '/profile',
       name: 'Profile',
-      component: Profile
+      component: Profile,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/pub/:id',
@@ -36,7 +39,10 @@ export default new Router({
     {
       path: '/new/pub',
       name: 'NewPub',
-      component: NewPub
+      component: NewPub,
+      meta: {
+        requiresAuth: true
+      }
     }
   ]
 })

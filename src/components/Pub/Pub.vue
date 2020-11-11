@@ -42,7 +42,6 @@
                 >
                   <v-icon size="15" color="primary">mdi-pencil</v-icon>
                 </v-btn>
-                <p>{{ $t('Email:') }} {{ paramPub.main_email }}</p>
               </v-col>
             </v-row>
           </v-card-text>
@@ -126,6 +125,7 @@
               outlined
               v-for="rating in paramPub.ratings"
               :key="rating.id"
+              class="mt-3"
             >
               <v-toolbar dense color="elevation-0" class="text-body-1">
                 <v-avatar size="30" class="mr-2 avatar-outlined">

@@ -13,7 +13,7 @@ const messages = {
   ja: jaMessage
 }
 
-let lang = 'ja'
+let lang = 'en'
 if (Cookies.get('lang')) lang = Cookies.get('lang')
 
 const i18n = new VueI18n({

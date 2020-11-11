@@ -3,13 +3,15 @@ import axios from 'axios'
 const state = {
   paramPub: null,
   myPubs: [],
-  pubs: []
+  pubs: [],
+  dishes: []
 }
 
 const getters = {
   paramPub: state => state.paramPub,
   myPubs: state => state.myPubs,
-  pubs: state => state.pubs
+  pubs: state => state.pubs,
+  dishes: state => state.dishes
 }
 
 const actions = {
@@ -37,6 +39,13 @@ const actions = {
     let url = '/user/pub/store_my_pub'
     const response = await axios.get(url)
     commit('SET_MY_PUB', response.data.data)
+  },
+  async getDishes({ commit }, param) {
+    let url = param.searchKey
+      ? `/user/dish/store?category=${param.category}&search_key=${param.searchKey}`
+      : `/user/dish/store?category=${param.category}`
+    const response = await axios.get(url)
+    commit('SET_DISH', response.data.data)
   }
 }
 
@@ -52,6 +61,9 @@ const mutations = {
   },
   SET_MY_PUB: function(state, pubs) {
     state.myPubs = pubs
+  },
+  SET_DISH: function(state, dishes) {
+    state.dishes = dishes
   }
 }
 
