@@ -46,7 +46,7 @@
           <v-col class="mb-6" justify="center" no-gutters>
             {{ $t('common.forgotPassword') }}
           </v-col>
-          <v-col md="6" offset-md="3">
+          <v-col class="text-center">
             <register-component
               @success="registerSuccess = true"
               class="mx-auto"

@@ -25,18 +25,16 @@ const actions = {
       email: user.email,
       password: user.password
     })
-    console.log(response)
     const token = response.data.access_token
     Cookies.set('access_token', token)
     state.setHeader()
     const userResponse = await axios.post('/auth/me')
-    commit('SET_CURRENT_USER', userResponse.data.data)
+    commit('SET_CURRENT_USER', userResponse.data)
     commit('SET_ACCESS_TOKEN', token)
   },
   async getUser({ commit, state }) {
     state.setHeader()
     const response = await axios.post('/auth/me')
-    console.log(response)
     commit('SET_CURRENT_USER', response.data)
   },
   async logout(context) {

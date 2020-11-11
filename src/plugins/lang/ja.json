@@ -12,19 +12,16 @@
     "user": "ユーザー",
     "go_home": "ホームページ"
   },
-
   "action": {
     "like": "Like",
     "comment": "Comment",
     "share": "Share"
   },
-
   "count": {
     "likes": "Likes",
     "comments": "Comments",
     "share": "Shares"
   },
-
   "layout": {
     "home": "Home",
     "history": "History",
@@ -34,7 +31,6 @@
     "my_profile": "My Profile",
     "about": "About This Application"
   },
-  
   "user": {
     "message": {
       "require": {
@@ -45,25 +41,59 @@
         "confirm_password": "パスワードの確認に失敗しました！パスワードが確認されていることを確認してください!",
         "all": "必要な入力をすべて入力してください"
       },
-
-      "login":{
+      "login": {
         "success": "ログイン成功!",
         "wrong": "入力したメールアドレスとパスワードは私たちの記録と一致しませんでした！ 確認してもう一度お試しください。",
         "fail": "申し訳ありませんが、問題が発生しました！ もう一度お試しください！"
       },
-
-      "register":{
+      "register": {
         "success": "登録に成功しました！ 安全な接続を確保するには、ログインしてください",
         "email_fail": "登録に失敗しました！ このメールは私たちの記録では無効でした！ 別のメールを選択してください",
         "fail": "申し訳ありませんが、問題が発生しました！ もう一度お試しください！"
       }
     }
   },
-  
   "admin": {
     "message": {
       "create_confirm": ""
     }
-
-  }
+  },
+  "home": "Home",
+  "signin": "Sign In",
+  "signout": "Sign Out",
+  "category": "Category",
+  "Pub Name:": "Pub Name:",
+  "Evaluation:": "Evaluation:",
+  "Address:": "Address:",
+  "Phone Number:": "Phone Number:",
+  "Email:": "Email:",
+  "Introduce": "Introduce",
+  "Business Hours:": "Business Hours",
+  "Save": "Save",
+  "Manage your profile information for account security": "Manage your profile information for account security",
+  "Your Profile": "Your profile",
+  "Phone number": "Phone number",
+  "Name": "Name",
+  "Email": "Email",
+  "Profile": "Profile",
+  "Form create pub": "Form create Pub",
+  "Preview": "Preview",
+  "Cancel": "Cancel",
+  "Accept our Terms": "Accept our Terms",
+  "Youtube video path": "Youtube video path",
+  "Google map path": "Google map path",
+  "Home photo": "Home photo",
+  "Pick an photo": "Pick an photo",
+  "Submit": "Submit",
+  "Description": "Description",
+  "Address": "Address",
+  "create a new pub": "Create a new pub",
+  "About": "About",
+  "Main email": "Main email",
+  "Write": "Write",
+  "Upload": "Upload",
+  "Choose your image": "Choose your image",
+  "Write review for": "Write review for",
+  "Review": "Review",
+  "Content": "Content"
 }

@@ -73,6 +73,10 @@
     <v-main class="grey lighten-3">
       <router-view />
     </v-main>
+
+    <v-footer>
+      Footer
+    </v-footer>
   </v-app>
 </template>
 

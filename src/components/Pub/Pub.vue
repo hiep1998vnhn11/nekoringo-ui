@@ -58,13 +58,16 @@
             <v-spacer />
           </v-toolbar>
           <v-divider />
+          <v-card-text>
+            {{ paramPub.description }}
+          </v-card-text>
         </v-card>
       </v-col>
       <v-col cols="5" class="text-center">
         <iframe
           width="414"
           height="250"
-          src="https://www.youtube.com/embed/E_Bw1n0Ixf4"
+          :src="paramPub.video_path"
           frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowfullscreen
@@ -72,7 +75,7 @@
       </v-col>
       <v-col cols="3" class="text-center">
         <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3928.6567081641556!2d105.79244411489928!3d10.045160692820222!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31a062afabc3362d%3A0x27461fd58612669b!2zTmjDoCBIw6BuZyBMw7phIE7hur9w!5e0!3m2!1svi!2s!4v1604634555685!5m2!1svi!2s"
+          :src="paramPub.map_path"
           width="333"
           height="250"
           frameborder="0"
@@ -87,19 +90,21 @@
     <v-row>
       <v-col cols="2">
         <v-card>
-          <v-card-text>
+          <v-card-text class="text-center">
             <v-rating
-              v-model="review.evaluation"
+              v-model="paramPub.rate_avrg"
               color="yellow darken-3"
               background-color="grey darken-1"
               empty-icon="$ratingFull"
               small
+              class="ml-n3"
               readonly
             ></v-rating>
+            {{ paramPub.rate_avrg }} / 5
           </v-card-text>
           <v-divider />
           <v-card-actions>
-            123 comments
+            {{ paramPub.ratings_count }} {{ $t('Ratings') }}
           </v-card-actions>
         </v-card>
       </v-col>
@@ -115,15 +120,21 @@
           </v-toolbar>
           <v-divider />
           <v-card-text>
-            <v-card tile elevation="0" outlined>
+            <v-card
+              tile
+              elevation="0"
+              outlined
+              v-for="rating in paramPub.ratings"
+              :key="rating.id"
+            >
               <v-toolbar dense color="elevation-0" class="text-body-1">
                 <v-avatar size="30" class="mr-2 avatar-outlined">
-                  <v-img :src="review.user_url" />
+                  <v-img :src="rating.user.profile_photo_path" />
                 </v-avatar>
-                {{ review.user_name }}
+                {{ rating.user.name }}
                 <v-spacer />
                 <v-rating
-                  v-model="review.evaluation"
+                  v-model="rating.rate"
                   color="yellow darken-3"
                   background-color="grey darken-1"
                   empty-icon="$ratingFull"
@@ -132,12 +143,13 @@
                 ></v-rating>
               </v-toolbar>
               <v-card-text>
-                {{ review.content }}
+                {{ rating.content }}
                 <v-img
+                  v-if="!!rating.image_path"
                   class="ml-5"
                   height="200"
                   width="300"
-                  :src="review.image_url"
+                  :src="rating.image_path"
                 />
               </v-card-text>
             </v-card>
