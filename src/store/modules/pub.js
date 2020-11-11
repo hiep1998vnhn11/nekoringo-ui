@@ -46,6 +46,16 @@ const actions = {
       : `/user/dish/store?category=${param.category}`
     const response = await axios.get(url)
     commit('SET_DISH', response.data.data)
+  },
+  async createDish({ commit }, formData) {
+    console.log(formData)
+    let url = `/user/dish/create`
+    const response = await axios.post(url, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    commit('CREATE_DISH', response.data.data)
   }
 }
 
@@ -64,6 +74,9 @@ const mutations = {
   },
   SET_DISH: function(state, dishes) {
     state.dishes = dishes
+  },
+  CREATE_DISH: function(state, dish) {
+    state.dishes.push(dish)
   }
 }
 

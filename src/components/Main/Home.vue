@@ -128,12 +128,7 @@
               </v-icon>
               {{ $t('Neighborhood') }}
             </v-chip>
-            <v-chip class="ma-2" color="cyan" label>
-              <v-icon left>
-                mdi-new-box
-              </v-icon>
-              {{ $t('New') }}
-            </v-chip>
+            <new-dish />
             <v-spacer />
             <v-text-field
               v-model="search"
@@ -223,11 +218,10 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { VueperSlides, VueperSlide } from 'vueperslides'
-import 'vueperslides/dist/vueperslides.css'
+import NewDish from '@/components/Pub/NewDish'
 
 export default {
-  components: { VueperSlides, VueperSlide },
+  components: { NewDish },
   data() {
     return {
       loading: false,
