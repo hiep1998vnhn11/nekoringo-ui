@@ -77,7 +77,7 @@
                 <v-expand-transition>
                   <div
                     v-if="hover"
-                    class="d-flex transition-fast-in-fast-out blue lighten-4 v-card--reveal black--text"
+                    class="d-flex transition-fast-in-fast-out blue lighten-4 v-card--reveal black--text text-h6"
                     style="height: 200px; width: 350px;"
                   >
                     <v-container>{{ pub.description }}</v-container>
@@ -199,16 +199,16 @@
                             <v-expand-transition>
                               <div
                                 v-if="hover"
-                                class="d-flex transition-fast-in-fast-out orange darken-2 v-card--reveal white--text"
+                                class="d-flex transition-fast-in-fast-out orange darken-2 v-card--reveal black--text text-h6"
                                 style="height: 150px; width: 200px;"
                               >
-                                <div class="red">{{ dish.name }}</div>
                                 <span>{{ dish.description }}</span>
                               </div>
                             </v-expand-transition>
                           </v-img>
                         </v-avatar>
                       </v-hover>
+                      {{ dish.name }}
                     </v-col>
                   </v-row>
                 </v-card>

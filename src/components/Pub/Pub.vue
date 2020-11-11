@@ -55,6 +55,18 @@
             <v-spacer />
             {{ $t('Introduce') }}
             <v-spacer />
+            <v-btn
+              icon
+              small
+              v-if="current"
+              @click="
+                changeStatus = 'Introduce'
+                change = true
+                text = paramPub.description
+              "
+            >
+              <v-icon color="primary" size="15">mdi-pencil</v-icon>
+            </v-btn>
           </v-toolbar>
           <v-divider />
           <v-card-text>
@@ -62,8 +74,33 @@
           </v-card-text>
         </v-card>
       </v-col>
-      <v-col cols="5" class="text-center">
+      <v-col cols="4" class="text-center">
+        <v-card tile elevation="0" outlined v-if="current">
+          <v-toolbar color="elevation-0" dense>
+            <v-spacer />
+            <v-btn
+              icon
+              small
+              @click="
+                changeStatus = 'Video'
+                change = true
+              "
+            >
+              <v-icon size="15" color="primary">mdi-pencil</v-icon>
+            </v-btn>
+          </v-toolbar>
+          <v-divider />
+          <iframe
+            width="350"
+            height="250"
+            :src="paramPub.video_path"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        </v-card>
         <iframe
+          v-else
           width="414"
           height="250"
           :src="paramPub.video_path"
@@ -72,8 +109,35 @@
           allowfullscreen
         ></iframe>
       </v-col>
-      <v-col cols="3" class="text-center">
+      <v-col cols="4" class="text-center">
+        <v-card tile outlined elevation="0" v-if="current">
+          <v-toolbar color="elevation-0" dense>
+            <v-spacer />
+            <v-btn
+              small
+              icon
+              @click="
+                changeStatus = 'Map'
+                change = true
+              "
+            >
+              <v-icon size="15" color="primary">mdi-pencil</v-icon>
+            </v-btn>
+          </v-toolbar>
+          <v-divider />
+          <iframe
+            :src="paramPub.map_path"
+            width="333"
+            height="250"
+            frameborder="0"
+            style="border:0;"
+            allowfullscreen=""
+            aria-hidden="false"
+            tabindex="0"
+          ></iframe>
+        </v-card>
         <iframe
+          v-else
           :src="paramPub.map_path"
           width="333"
           height="250"
@@ -113,9 +177,18 @@
             <v-spacer />
             {{ $t('Review') }}
             <v-spacer />
-            <v-btn text outlined class="text-capitalize" @click="dialog = true">
-              Write an review
+            <v-btn
+              v-if="!!currentUser"
+              text
+              outlined
+              class="text-capitalize"
+              @click="dialog = true"
+            >
+              {{ $t('Write an review') }}
             </v-btn>
+            <span v-else class="text-caption">
+              {{ $t('Please login to write Review!') }}
+            </span>
           </v-toolbar>
           <v-divider />
           <v-card-text>
@@ -212,6 +285,41 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-dialog width="600" v-model="change">
+      <v-card :loading="loadingChange">
+        <v-card-title>
+          {{ $t(`Change ${changeStatus}`) }}
+        </v-card-title>
+        <v-divider />
+        <v-card-text>
+          <v-textarea
+            class="mt-3"
+            :label="$t(changeStatus)"
+            auto-grow
+            outlined
+            rows="3"
+            row-height="25"
+            v-model="text"
+          ></v-textarea>
+        </v-card-text>
+        <v-divider />
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            outlined
+            class="text-capitalize primary"
+            @click="onSaveChange"
+            :disabled="saveDisable"
+          >
+            {{ $t('Save') }}
+          </v-btn>
+          <v-btn outlined class="error text-capitalize" @click="change = ''">
+            {{ $t('Cancel') }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -229,14 +337,10 @@ export default {
       image: null,
       imageUrl: null,
       rating: 0,
-      review: {
-        user_name: 'Hiep',
-        user_url:
-          'https://cdn.tgdd.vn/Files/2019/01/01/1142002/s8ori_800x600.jpg',
-        content: 'Ngon',
-        image_url: 'https://www.hoteljob.vn/files/Anh-HTJ-Hong/pub-la-gi-1.png',
-        evaluation: 5
-      }
+      change: false,
+      changeStatus: null,
+      text: '',
+      loadingChange: false
     }
   },
   computed: {
@@ -249,10 +353,35 @@ export default {
     },
     disable() {
       return !this.content || !this.rating
+    },
+    saveDisable() {
+      return (
+        this.text === this.paramPub.description ||
+        this.text === '' ||
+        this.text === this.paramPub.map_path ||
+        this.text === this.paramPub.video_path
+      )
     }
   },
   methods: {
     ...mapActions('pub', ['getParamPub']),
+    async onSaveChange() {
+      this.loadingChange = true
+      try {
+        let url =
+          this.changeStatus === 'Introduce'
+            ? 'introduce'
+            : this.changeStatus === 'Map'
+            ? 'map'
+            : 'video'
+        await console.log(url)
+      } catch (err) {
+        this.error = err.toString()
+      }
+      this.loadingChange = false
+      this.change = false
+      this.changeStatus = null
+    },
     async fetchData() {
       this.loading = true
       this.error = null
@@ -288,12 +417,11 @@ export default {
         formData.append('rate', this.rating)
         formData.append('content', this.content)
         if (this.image) formData.append('image', this.image)
-        const response = await axios.post(url, formData, {
+        await axios.post(url, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         })
-        console.log(response)
         this.$swal({
           icon: 'success',
           title: 'Success',
@@ -323,7 +451,10 @@ export default {
   },
   watch: {
     // call again the method if the route changes
-    $route: 'fetchData'
+    $route: 'fetchData',
+    change() {
+      if (!this.change) this.text = ''
+    }
   }
 }
 </script>
