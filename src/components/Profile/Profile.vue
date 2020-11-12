@@ -85,9 +85,9 @@
             <br />
             <v-file-input
               accept="image/png, image/jpeg, image/bmp"
-              placeholder="Pick an avatar"
+              :placeholder="$t('Pick an avatar')"
               prepend-icon="mdi-camera"
-              label="Avatar"
+              :label="$t('Avatar')"
               @change="onFileChange"
               v-model="image"
             ></v-file-input>
@@ -97,7 +97,7 @@
     </v-card>
     <v-card :loading="loadingPub" tile elevation="0" outlined>
       <v-card-title>
-        My Pubs
+        {{ $t('My Pubs') }}
       </v-card-title>
       <v-card-text>
         <v-row>

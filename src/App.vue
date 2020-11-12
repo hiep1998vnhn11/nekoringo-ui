@@ -37,6 +37,7 @@
         x-large
         class="text-capitalize"
         :to="{ name: 'Login' }"
+        active-class="primary--text"
       >
         {{ $t('signin') }}
       </v-btn>
@@ -79,9 +80,26 @@
     <v-main class="grey lighten-3">
       <router-view />
     </v-main>
-
-    <v-footer>
-      Footer
+    <v-divider />
+    <v-footer class="grey lighten-3">
+      <v-row>
+        <v-col cols="4" class="text-center">
+          <div>{{ $t('Discovery') }}</div>
+          <div>{{ $t('Comment') }}</div>
+          <div>{{ $t('Collection') }}</div>
+          <div>{{ $t('Rule') }}</div>
+        </v-col>
+        <v-col cols="4" class="text-center">
+          <div>{{ $t('Introduction') }}</div>
+          <div>{{ $t('Support') }}</div>
+          <div>{{ $t('Feedback') }}</div>
+        </v-col>
+        <v-col cols="4" class="text-center">
+          <div>{{ $t('Login') }}</div>
+          <div>FaceBook</div>
+          <div>Intagram</div>
+        </v-col>
+      </v-row>
     </v-footer>
   </v-app>
 </template>

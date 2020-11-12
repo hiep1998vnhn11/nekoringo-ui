@@ -9,7 +9,7 @@
             type="success"
             height="50"
           >
-            Register Successfully! Please login
+            {{ $t('Register Successfully! Please login') }}
           </v-alert>
           <v-alert
             v-if="error"
@@ -24,14 +24,14 @@
             <v-text-field
               v-model="email"
               :rules="emailRules"
-              label="E-mail"
+              :label="$t('Email')"
               required
             ></v-text-field>
             <v-text-field
               v-model="password"
               type="password"
               :rules="passwordRules"
-              label="Password"
+              :label="$t('Password')"
               required
             ></v-text-field>
             <v-btn

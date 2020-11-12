@@ -130,18 +130,29 @@
             </v-chip>
             <new-dish />
             <v-spacer />
-            <v-text-field
-              v-model="search"
-              prepend-inner-icon="mdi-magnify"
-              :label="$t('Search')"
-              outlined
-              clearable
-              dense
-              rounded
-              single-line
-              hide-details
-              @input="fetchDish(tab, search)"
-            ></v-text-field>
+            <v-col cols="3">
+              <v-select
+                class="mt-6"
+                :items="items"
+                :label="$t('Place')"
+                dense
+                solo
+              ></v-select>
+            </v-col>
+            <v-col cols="3">
+              <v-text-field
+                v-model="search"
+                prepend-inner-icon="mdi-magnify"
+                :label="$t('Search')"
+                outlined
+                clearable
+                dense
+                rounded
+                single-line
+                hide-details
+                @input="fetchDish(tab, search)"
+              ></v-text-field>
+            </v-col>
           </v-toolbar>
           <v-divider />
           <v-card-text>
@@ -289,7 +300,8 @@ export default {
           title: 'Slide #1',
           content: 'Slide content.'
         }
-      ]
+      ],
+      items: ['Bách Khoa', 'Hai Bà Trưng', 'Trần Duy Hưng']
     }
   },
   computed: mapGetters('pub', ['pubs', 'dishes']),

@@ -8,7 +8,7 @@
         <v-spacer />
       </v-card-title>
       <v-card-text>
-        (Hint: (*) is required!)
+        {{ $t('Hint: (*) is required!') }}
         <v-form ref="form" lazy-validation>
           <v-row>
             <v-col cols="7">

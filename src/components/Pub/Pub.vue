@@ -28,7 +28,7 @@
           <v-card-text class="text-body-1">
             <v-row no-gutters>
               <v-col cols="6">
-                <p>{{ $t('Name:') }} {{ paramPub.name }}</p>
+                <p>{{ $t('Name') }} : {{ paramPub.name }}</p>
                 <p>{{ $t('Email:') }} {{ paramPub.main_email }}</p>
                 <p>{{ $t('Address:') }} {{ paramPub.address }}</p>
                 <p>{{ $t('Phone Number:') }} {{ paramPub.phone_number }}</p>
@@ -149,6 +149,8 @@
         ></iframe>
       </v-col>
     </v-row>
+    <v-divider />
+    <dish-component />
     <v-divider />
     <v-row>
       <v-col cols="2">
@@ -326,7 +328,11 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import axios from 'axios'
+import Dish from '@/components/main/Dish'
 export default {
+  components: {
+    'dish-component': Dish
+  },
   data() {
     return {
       loading: false,
