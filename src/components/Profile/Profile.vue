@@ -27,19 +27,35 @@
                     <td class="text-right">{{ $t('Name') }}</td>
                     <td v-if="!changeName">{{ currentUser.name }}</td>
                     <td v-else>
-                      <v-text-field class="mt-2 mb-n5" label="Name" solo />
+                      <v-text-field
+                        class="mt-2 mb-n5"
+                        :label="$t('Name')"
+                        v-model="name"
+                        solo
+                      />
                     </td>
 
                     <td>
                       <v-btn
                         icon
                         small
-                        @click="changeName = true"
+                        @click="
+                          changeName = true
+                          name = currentUser.name
+                        "
                         v-if="!changeName"
                       >
                         <v-icon size="15" color="primary">mdi-pencil</v-icon>
                       </v-btn>
-                      <v-btn icon small @click="changeName = false" v-else>
+                      <v-btn
+                        icon
+                        small
+                        @click="
+                          changeName = false
+                          name = ''
+                        "
+                        v-else
+                      >
                         <v-icon size="15" color="primary">mdi-close</v-icon>
                       </v-btn>
                     </td>
@@ -48,13 +64,21 @@
                     <td class="text-right">{{ $t('Phone number') }}</td>
                     <td v-if="!changePhone">{{ currentUser.phone_number }}</td>
                     <td v-else>
-                      <v-text-field class="mt-2 mb-n5" label="Phone" solo />
+                      <v-text-field
+                        class="mt-2 mb-n5"
+                        :label="$t('Phone number')"
+                        v-model="phone"
+                        solo
+                      />
                     </td>
                     <td>
                       <v-btn
                         icon
                         small
-                        @click="changePhone = true"
+                        @click="
+                          changePhone = true
+                          phone = currentUser.phone_number
+                        "
                         v-if="!changePhone"
                       >
                         <v-icon size="15" color="primary">mdi-pencil</v-icon>
@@ -176,7 +200,7 @@ export default {
       this.loading = true
       this.error = null
       try {
-        let url = '/user/update'
+        let url = '/auth/update'
         var formData = new FormData()
         if (this.image) {
           formData.append('image', this.image)
@@ -196,11 +220,17 @@ export default {
           formData.append('phone_number', this.phone)
         }
         await axios.post(url, formData)
+        this.$swal({
+          icon: 'success',
+          title: this.$t('Success'),
+          text: this.$t('Update successfully!')
+        })
         await this.getUser()
       } catch (err) {
         this.error = err.toString()
       }
       this.name = this.phone = ''
+      this.image = this.url = null
       this.changeName = this.changePhone = false
       this.loading = false
     }
