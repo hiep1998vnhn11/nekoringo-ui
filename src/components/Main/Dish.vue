@@ -164,12 +164,6 @@ export default {
       onboarding: 0,
       search: '',
       loadingDish: false,
-      slides: [
-        {
-          title: 'Slide #1',
-          content: 'Slide content.'
-        }
-      ],
       items: ['Bách Khoa', 'Hai Bà Trưng', 'Trần Duy Hưng']
     }
   },

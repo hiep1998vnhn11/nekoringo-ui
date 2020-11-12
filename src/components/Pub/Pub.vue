@@ -153,7 +153,7 @@
       </v-col>
     </v-row>
     <v-divider />
-    <dish-component />
+    <dish />
     <v-divider />
     <v-row v-if="!!paramPub">
       <v-col cols="2">
@@ -458,7 +458,7 @@
               required
             ></v-text-field>
             <v-text-field
-              v-model="phone"
+              v-model="phone_number"
               :counter="12"
               :label="`${$t('Phone number')} *`"
               required
@@ -510,10 +510,10 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import axios from 'axios'
-import Dish from '@/components/main/Dish'
+import Dish from '@/components/Main/Dish'
 export default {
   components: {
-    'dish-component': Dish
+    Dish
   },
   data() {
     return {
@@ -583,8 +583,11 @@ export default {
           if (this.address !== this.paramPub.address && this.address) {
             formData.append('address', this.address)
           }
-          if (this.phone !== this.paramPub.phone_number && this.phone) {
-            formData.append('phone_number', this.phone)
+          if (
+            this.phone_number !== this.paramPub.phone_number &&
+            this.phone_number
+          ) {
+            formData.append('phone_number', this.phone_number)
           }
           if (this.image) {
             formData.append('image', this.image)
@@ -693,7 +696,7 @@ export default {
       this.onCancel()
     },
     onCancel() {
-      this.content = this.email = this.phone = this.name = this.address = this.business_time =
+      this.content = this.email = this.phone_number = this.name = this.address = this.business_time =
         ''
       this.rating = 0
       this.image = this.imageUrl = this.changeStatus = null
@@ -701,7 +704,7 @@ export default {
     },
     onChangeInfo() {
       this.email = this.paramPub.main_email
-      this.phone = this.paramPub.phone_number
+      this.phone_number = this.paramPub.phone_number
       this.name = this.paramPub.name
       this.address = this.paramPub.address
       this.imageUrl = this.paramPub.home_photo_path
@@ -754,7 +757,7 @@ export default {
     },
     changeInfo() {
       if (!this.changeInfo) {
-        this.email = this.phone = this.name = this.address = this.business_time =
+        this.email = this.phone_number = this.name = this.address = this.business_time =
           ''
         this.image = this.imageUrl = null
       }

@@ -97,12 +97,12 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import NewDish from '@/components/Pub/NewDish'
-import Dish from './Dish'
+import DishComponent from './Dish'
 
 export default {
   components: {
     NewDish,
-    'dish-component': Dish
+    DishComponent
   },
   data() {
     return {
