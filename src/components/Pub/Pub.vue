@@ -202,7 +202,7 @@
               text
               outlined
               class="text-capitalize"
-              @click="dialog = true"
+              @click="dialogComment = true"
             >
               {{ $t('Write an Comment') }}
             </v-btn>
@@ -236,6 +236,14 @@
                       small
                       readonly
                     ></v-rating>
+                    <v-btn
+                      icon
+                      small
+                      v-if="currentUser.id === rating.user.id"
+                      @click="deleteRating(rating.id)"
+                    >
+                      <v-icon size="15" color="error">mdi-trash-can</v-icon>
+                    </v-btn>
                   </v-toolbar>
                   <v-card-text>
                     {{ rating.content }}
@@ -250,8 +258,39 @@
                 </v-card>
               </v-tab-item>
               <v-tab-item value="comment">
-                <v-card tile outlined elevation="0">
-                  Comment
+                <v-card
+                  tile
+                  outlined
+                  elevation="0"
+                  v-for="comment in paramPub.comments"
+                  :key="`comment-${comment.id}`"
+                  class="mt-3"
+                >
+                  <v-toolbar dense color="elevation-0" class="text-body-1">
+                    <v-avatar size="30" class="mr-2 avatar-outlined">
+                      <v-img :src="comment.user.profile_photo_path" />
+                    </v-avatar>
+                    {{ comment.user.name }}
+                    <v-spacer />
+                    <v-btn
+                      icon
+                      small
+                      v-if="currentUser.id === comment.user.id"
+                      @click="deleteComment(comment.id)"
+                    >
+                      <v-icon size="15" color="error">mdi-trash-can</v-icon>
+                    </v-btn>
+                  </v-toolbar>
+                  <v-card-text>
+                    {{ comment.content }}
+                    <v-img
+                      v-if="!!comment.image_path"
+                      class="ml-5"
+                      height="200"
+                      width="300"
+                      :src="comment.image_path"
+                    />
+                  </v-card-text>
                 </v-card>
               </v-tab-item>
             </v-tabs-items>
@@ -305,6 +344,53 @@
             :disabled="disable"
             class="primary text-capitalize"
             @click="onSave"
+          >
+            {{ $t('Write') }}
+          </v-btn>
+          <v-btn class="error text-capitalize" @click="onCancel">
+            {{ $t('Cancel') }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog width="800" v-model="dialogComment">
+      <v-card :loading="loadingComment" v-if="!!paramPub">
+        <v-card-title>
+          {{ $t('Write comment for') }} {{ paramPub.name }}
+        </v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col cols="6">
+              <v-textarea
+                class="mt-2 mb-n5"
+                :label="$t('Content')"
+                auto-grow
+                rows="3"
+                row-height="15"
+                v-model="content"
+              ></v-textarea>
+            </v-col>
+            <v-col cols="6">
+              <v-file-input
+                accept="image/png, image/jpeg, image/bmp"
+                :placeholder="$t('Choose your image')"
+                prepend-icon="mdi-camera"
+                :label="$t('Upload')"
+                v-model="image"
+                @change="onFileChange"
+              ></v-file-input>
+              <v-img height="200" :src="imageUrl" />
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-divider />
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            :disabled="!content && !image"
+            class="primary text-capitalize"
+            @click="onSaveComment"
           >
             {{ $t('Write') }}
           </v-btn>
@@ -449,7 +535,9 @@ export default {
       address: '',
       business_time: '',
       phone_number: '',
-      changeInfo: false
+      changeInfo: false,
+      dialogComment: false,
+      loadingComment: false
     }
   },
   computed: {
@@ -574,14 +662,42 @@ export default {
         })
       }
       this.loadingRating = false
-      this.dialog = false
+      this.onCancel()
+    },
+    async onSaveComment() {
+      this.loadingComment = true
+      try {
+        let url = `/user/pub/${this.paramPub.id}/comment/create`
+        var formData = new FormData()
+        formData.append('content', this.content)
+        if (this.image) formData.append('image', this.image)
+        await axios.post(url, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        this.$swal({
+          icon: 'success',
+          title: 'Success',
+          text: 'Create comment successfully!'
+        })
+        this.fetchData()
+      } catch (err) {
+        this.$swal({
+          icon: 'error',
+          title: 'Error',
+          text: err.toString()
+        })
+      }
+      this.loadingComment = false
+      this.onCancel()
     },
     onCancel() {
       this.content = this.email = this.phone = this.name = this.address = this.business_time =
         ''
       this.rating = 0
       this.image = this.imageUrl = this.changeStatus = null
-      this.changeInfo = this.change = this.dialog = false
+      this.changeInfo = this.change = this.dialog = this.dialogComment = false
     },
     onChangeInfo() {
       this.email = this.paramPub.main_email
@@ -591,6 +707,40 @@ export default {
       this.imageUrl = this.paramPub.home_photo_path
       this.business_time = this.paramPub.business_time
       this.changeInfo = true
+    },
+    async deleteComment(commentId) {
+      try {
+        await axios.post(`/user/comment/${commentId}/delete`)
+        this.$swal({
+          icon: 'success',
+          title: this.$t('Success'),
+          text: this.$t('Delete comment successfully!')
+        })
+        await this.fetchData()
+      } catch (err) {
+        this.$swal({
+          icon: 'error',
+          title: this.$t('Error'),
+          text: err.toString()
+        })
+      }
+    },
+    async deleteRating(ratingId) {
+      try {
+        await axios.post(`/user/rating/${ratingId}/delete`)
+        this.$swal({
+          icon: 'success',
+          title: this.$t('Success'),
+          text: this.$t('Delete rating successfully!')
+        })
+        await this.fetchData()
+      } catch (err) {
+        this.$swal({
+          icon: 'error',
+          title: this.$t('Error'),
+          text: err.toString()
+        })
+      }
     }
   },
   mounted() {
