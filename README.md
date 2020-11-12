@@ -2,7 +2,7 @@
 
 ## Usage
 
-### Step 1:
+### Step 1: (If not run server api at local)
 
 Change config/dev.env.js
 
