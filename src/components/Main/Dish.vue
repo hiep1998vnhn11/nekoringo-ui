@@ -176,18 +176,9 @@ export default {
   computed: mapGetters('pub', ['dishes']),
   mounted() {
     this.fetchDish('buffet')
-    setInterval(this.next, 3000)
   },
   methods: {
     ...mapActions('pub', ['getDishes']),
-    next() {
-      this.onboarding =
-        this.onboarding + 1 === this.length.length ? 0 : this.onboarding + 1
-    },
-    prev() {
-      this.onboarding =
-        this.onboarding - 1 < 0 ? this.length.length - 1 : this.onboarding - 1
-    },
     async fetchDish(category, searchKey = null) {
       this.loadingDish = true
       this.error = null

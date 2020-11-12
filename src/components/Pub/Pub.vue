@@ -176,11 +176,17 @@
       <v-col cols="10">
         <v-card tile outlined elevation="0">
           <v-toolbar color="elevation-0" class="text-h6" dense>
+            <v-btn class="text-capitalize" @click="tab = 'rating'" text>
+              Rating
+            </v-btn>
+            <v-btn class="text-capitalize" @click="tab = 'comment'" text>
+              Comment
+            </v-btn>
             <v-spacer />
             {{ $t('Review') }}
             <v-spacer />
             <v-btn
-              v-if="!!currentUser"
+              v-if="!!currentUser && tab === 'rating'"
               text
               outlined
               class="text-capitalize"
@@ -188,46 +194,64 @@
             >
               {{ $t('Write an review') }}
             </v-btn>
+            <v-btn
+              v-else-if="!!currentUser && tab === 'comment'"
+              text
+              outlined
+              class="text-capitalize"
+              @click="dialog = true"
+            >
+              {{ $t('Write an Comment') }}
+            </v-btn>
             <span v-else class="text-caption">
               {{ $t('Please login to write Review!') }}
             </span>
           </v-toolbar>
           <v-divider />
           <v-card-text>
-            <v-card
-              tile
-              elevation="0"
-              outlined
-              v-for="rating in paramPub.ratings"
-              :key="rating.id"
-              class="mt-3"
-            >
-              <v-toolbar dense color="elevation-0" class="text-body-1">
-                <v-avatar size="30" class="mr-2 avatar-outlined">
-                  <v-img :src="rating.user.profile_photo_path" />
-                </v-avatar>
-                {{ rating.user.name }}
-                <v-spacer />
-                <v-rating
-                  v-model="rating.rate"
-                  color="yellow darken-3"
-                  background-color="grey darken-1"
-                  empty-icon="$ratingFull"
-                  small
-                  readonly
-                ></v-rating>
-              </v-toolbar>
-              <v-card-text>
-                {{ rating.content }}
-                <v-img
-                  v-if="!!rating.image_path"
-                  class="ml-5"
-                  height="200"
-                  width="300"
-                  :src="rating.image_path"
-                />
-              </v-card-text>
-            </v-card>
+            <v-tabs-items v-model="tab">
+              <v-tab-item value="rating">
+                <v-card
+                  tile
+                  elevation="0"
+                  outlined
+                  v-for="rating in paramPub.ratings"
+                  :key="rating.id"
+                  class="mt-3"
+                >
+                  <v-toolbar dense color="elevation-0" class="text-body-1">
+                    <v-avatar size="30" class="mr-2 avatar-outlined">
+                      <v-img :src="rating.user.profile_photo_path" />
+                    </v-avatar>
+                    {{ rating.user.name }}
+                    <v-spacer />
+                    <v-rating
+                      v-model="rating.rate"
+                      color="yellow darken-3"
+                      background-color="grey darken-1"
+                      empty-icon="$ratingFull"
+                      small
+                      readonly
+                    ></v-rating>
+                  </v-toolbar>
+                  <v-card-text>
+                    {{ rating.content }}
+                    <v-img
+                      v-if="!!rating.image_path"
+                      class="ml-5"
+                      height="200"
+                      width="300"
+                      :src="rating.image_path"
+                    />
+                  </v-card-text>
+                </v-card>
+              </v-tab-item>
+              <v-tab-item value="comment">
+                <v-card tile outlined elevation="0">
+                  Comment
+                </v-card>
+              </v-tab-item>
+            </v-tabs-items>
           </v-card-text>
         </v-card>
       </v-col>
@@ -346,7 +370,8 @@ export default {
       change: false,
       changeStatus: null,
       text: '',
-      loadingChange: false
+      loadingChange: false,
+      tab: 'rating'
     }
   },
   computed: {

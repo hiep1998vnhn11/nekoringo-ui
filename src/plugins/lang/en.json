@@ -141,5 +141,14 @@
   "Write an review": "Write an review",
   "Please login to write Review!": "Please login to write Review!",
   "Create a new Dish": "Create a new Dish",
-  "Category": "Category"
+  "Category": "Category",
+  "Discovery": "Discovery",
+  "Comment": "Comment",
+  "Collection": "Collection",
+  "Rule": "Rule",
+  "Introduction": "Introduction",
+  "Support": "Support",
+  "Feedback": "Feedback",
+  "Login": "Login",
+  "Place": "Place"
 }
