@@ -194,9 +194,6 @@ export default {
           title: 'Success',
           text: `Create ${this.name} successfully!`
         })
-        this.name = this.phone = this.address = this.description = ''
-        this.email = this.videoPath = this.mapPath = ''
-        this.image = this.imageUrl = null
       } catch (err) {
         this.$swal({
           icon: 'error',
@@ -205,6 +202,9 @@ export default {
         })
         this.error = err.toString()
       }
+      this.name = this.phone = this.address = this.description = ''
+      this.email = this.videoPath = this.mapPath = ''
+      this.image = this.imageUrl = null
       this.loading = false
     }
   }

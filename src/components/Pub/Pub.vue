@@ -5,7 +5,7 @@
       class="mx-auto"
       type="card"
     ></v-skeleton-loader>
-    <v-row no-gutters v-else>
+    <v-row no-gutters v-else-if="!!paramPub">
       <v-col cols="2" width="200">
         <v-hover v-slot="{ hover }">
           <v-avatar class="avatar-outlined" tile color="grey" size="200">
@@ -39,6 +39,7 @@
                   small
                   icon
                   style="position: absolute; right: 15px"
+                  @click="onChangeInfo"
                 >
                   <v-icon size="15" color="primary">mdi-pencil</v-icon>
                 </v-btn>
@@ -48,7 +49,7 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-row no-gutters class="mt-5">
+    <v-row no-gutters class="mt-5" v-if="!!paramPub">
       <v-col cols="4">
         <v-card outlined height="250" tile>
           <v-toolbar color="elevation-0" class="text-h6" dense>
@@ -83,6 +84,7 @@
               small
               @click="
                 changeStatus = 'Video'
+                text = paramPub.video_path
                 change = true
               "
             >
@@ -118,6 +120,7 @@
               icon
               @click="
                 changeStatus = 'Map'
+                text = paramPub.map_path
                 change = true
               "
             >
@@ -152,7 +155,7 @@
     <v-divider />
     <dish-component />
     <v-divider />
-    <v-row>
+    <v-row v-if="!!paramPub">
       <v-col cols="2">
         <v-card>
           <v-card-text class="text-center">
@@ -258,7 +261,7 @@
     </v-row>
 
     <v-dialog width="800" v-model="dialog">
-      <v-card :loading="loadingRating">
+      <v-card :loading="loadingRating" v-if="!!paramPub">
         <v-card-title>
           {{ $t('Write review for') }} {{ paramPub.name }}
         </v-card-title>
@@ -346,6 +349,75 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-dialog width="800" v-model="changeInfo">
+      <v-card :loading="loadingChange">
+        <v-card-title>
+          {{ $t(`Change pub information`) }}
+        </v-card-title>
+        <v-divider />
+        <v-row class="mx-auto">
+          <v-col cols="7">
+            <v-text-field
+              v-model="name"
+              :counter="60"
+              :label="`${$t('Name')} *`"
+              required
+            ></v-text-field>
+
+            <v-text-field
+              v-model="address"
+              :counter="120"
+              :label="`${$t('Address')} *`"
+              required
+            ></v-text-field>
+            <v-text-field
+              v-model="phone"
+              :counter="12"
+              :label="`${$t('Phone number')} *`"
+              required
+            ></v-text-field>
+            <v-text-field
+              v-model="email"
+              :counter="55"
+              :label="`${$t('Main email')} *`"
+              required
+            ></v-text-field>
+            <v-text-field
+              v-model="business_time"
+              :counter="55"
+              :label="`${$t('Business time')} *`"
+              required
+            ></v-text-field>
+          </v-col>
+          <v-col cols="5">
+            <v-file-input
+              accept="image/png, image/jpeg, image/bmp"
+              :placeholder="$t('Pick an photo')"
+              prepend-icon="mdi-camera"
+              :label="`${$t('Home photo')} *`"
+              @change="onFileChange"
+              v-model="image"
+            ></v-file-input>
+            <v-img height="200" width="200" :src="imageUrl" />
+          </v-col>
+        </v-row>
+        <v-divider />
+        <v-card-actions>
+          <v-spacer />
+          <v-btn outlined class="text-capitalize primary" @click="onSaveChange">
+            {{ $t('Save') }}
+          </v-btn>
+          <v-btn
+            outlined
+            class="error text-capitalize"
+            @click="changeInfo = false"
+          >
+            {{ $t('Cancel') }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -371,14 +443,20 @@ export default {
       changeStatus: null,
       text: '',
       loadingChange: false,
-      tab: 'rating'
+      tab: 'rating',
+      name: '',
+      email: '',
+      address: '',
+      business_time: '',
+      phone_number: '',
+      changeInfo: false
     }
   },
   computed: {
     ...mapGetters('pub', ['paramPub']),
     ...mapGetters('user', ['currentUser']),
     current() {
-      return this.currentUser
+      return this.currentUser && this.paramPub
         ? this.currentUser.id === this.paramPub.user_id
         : false
     },
@@ -386,12 +464,12 @@ export default {
       return !this.content || !this.rating
     },
     saveDisable() {
-      return (
-        this.text === this.paramPub.description ||
-        this.text === '' ||
-        this.text === this.paramPub.map_path ||
-        this.text === this.paramPub.video_path
-      )
+      return this.paramPub
+        ? this.text === this.paramPub.description ||
+            this.text === '' ||
+            this.text === this.paramPub.map_path ||
+            this.text === this.paramPub.video_path
+        : true
     }
   },
   methods: {
@@ -399,19 +477,47 @@ export default {
     async onSaveChange() {
       this.loadingChange = true
       try {
-        let url =
-          this.changeStatus === 'Introduce'
-            ? 'introduce'
-            : this.changeStatus === 'Map'
-            ? 'map'
-            : 'video'
-        await console.log(url)
+        let url = `/user/pub/${this.paramPub.id}/update`
+        let formData = new FormData()
+        if (this.changeStatus === 'Introduce' && this.text) {
+          formData.append('description', this.text)
+        } else if (this.changeStatus === 'Video' && this.text) {
+          formData.append('video_path', this.text)
+        } else if (this.changeStatus === 'Map' && this.text) {
+          formData.append('map_path', this.text)
+        } else if (this.changeInfo) {
+          if (this.name !== this.paramPub.name && this.name) {
+            formData.append('name', this.name)
+          }
+          if (this.email !== this.paramPub.main_email && this.email) {
+            formData.append('main_email', this.email)
+          }
+          if (this.address !== this.paramPub.address && this.address) {
+            formData.append('address', this.address)
+          }
+          if (this.phone !== this.paramPub.phone_number && this.phone) {
+            formData.append('phone_number', this.phone)
+          }
+          if (this.image) {
+            formData.append('image', this.image)
+          }
+        }
+        await axios.post(url, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        this.$swal({
+          icon: 'success',
+          title: this.$t('Success'),
+          text: this.$t('Update Pub successfully!')
+        })
+        await this.fetchData()
       } catch (err) {
         this.error = err.toString()
       }
       this.loadingChange = false
-      this.change = false
-      this.changeStatus = null
+      this.onCancel()
     },
     async fetchData() {
       this.loading = true
@@ -471,10 +577,20 @@ export default {
       this.dialog = false
     },
     onCancel() {
-      this.content = ''
+      this.content = this.email = this.phone = this.name = this.address = this.business_time =
+        ''
       this.rating = 0
-      this.image = this.imageUrl = null
-      this.dialog = false
+      this.image = this.imageUrl = this.changeStatus = null
+      this.changeInfo = this.change = this.dialog = false
+    },
+    onChangeInfo() {
+      this.email = this.paramPub.main_email
+      this.phone = this.paramPub.phone_number
+      this.name = this.paramPub.name
+      this.address = this.paramPub.address
+      this.imageUrl = this.paramPub.home_photo_path
+      this.business_time = this.paramPub.business_time
+      this.changeInfo = true
     }
   },
   mounted() {
@@ -485,6 +601,13 @@ export default {
     $route: 'fetchData',
     change() {
       if (!this.change) this.text = ''
+    },
+    changeInfo() {
+      if (!this.changeInfo) {
+        this.email = this.phone = this.name = this.address = this.business_time =
+          ''
+        this.image = this.imageUrl = null
+      }
     }
   }
 }
