@@ -2,13 +2,17 @@
 
 ## Usage
 
-Change
+### Step 1:
+
+Change config/dev.env.js
 
 ```
-VUE_APP_SERVER_BASE_URL: '"http://localhost:8000/api"'
+VUE_APP_SERVER_BASE_URL: '"https://nekoringo-api.herokuapp.com/api"'
 ```
 
-at config/dev.env.js
+'https://nekoringo-api.herokuapp.com/api' is server api!
+
+### Step 2:
 
 ```
 yarn install
