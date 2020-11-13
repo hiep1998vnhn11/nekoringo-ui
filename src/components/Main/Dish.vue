@@ -143,20 +143,20 @@ export default {
     return {
       loading: false,
       error: null,
-      tab: 'buffet',
+      tab: 'Buffet',
       tabs: [
         {
-          text: 'buffet',
+          text: 'Buffet',
           src:
             'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRyBCykvDB0y4AliS4QHkODIziiBXTB4niLJA&usqp=CAU'
         },
         {
-          text: 'sushi',
+          text: 'Sushi',
           src:
             'https://vinmec-prod.s3.amazonaws.com/images/20200410_153038_287034_sushi-la-gi.max-1800x1800.jpg'
         },
         {
-          text: 'barbecue',
+          text: 'Barbecue',
           src:
             'https://nghebep.com/wp-content/uploads/2019/02/cac-mon-nuong-duoc-yeu-thich.jpg'
         }
@@ -169,7 +169,7 @@ export default {
   },
   computed: mapGetters('pub', ['dishes']),
   mounted() {
-    this.fetchDish('buffet')
+    this.fetchDish('Buffet')
   },
   methods: {
     ...mapActions('pub', ['getDishes']),

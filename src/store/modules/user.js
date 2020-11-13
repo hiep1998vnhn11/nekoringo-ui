@@ -26,7 +26,7 @@ const actions = {
       password: user.password
     })
     const token = response.data.access_token
-    Cookies.set('access_token', token)
+    Cookies.set('access_token', token, { expires: 1 })
     state.setHeader()
     const userResponse = await axios.post('/auth/me')
     commit('SET_CURRENT_USER', userResponse.data)
