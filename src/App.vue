@@ -13,7 +13,13 @@
       >
         {{ $t('home') }}
       </v-btn>
-      <v-btn text x-large class="text-capitalize">
+      <v-btn
+        text
+        x-large
+        class="text-capitalize"
+        active-class="primary--text"
+        :to="{ name: 'AllPub' }"
+      >
         {{ $t('category') }}
       </v-btn>
       <v-btn text x-large class="text-capitalize">

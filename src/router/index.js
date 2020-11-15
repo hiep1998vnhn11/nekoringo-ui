@@ -5,6 +5,7 @@ import Home from '@/components/Main/Home'
 import Pub from '@/components/Pub/Pub'
 import Profile from '@/components/Profile/Profile'
 import NewPub from '@/components/Pub/NewPub'
+import AllPub from '@/components/Pub/AllPub'
 
 Vue.use(Router)
 
@@ -30,6 +31,11 @@ export default new Router({
       meta: {
         requiresAuth: true
       }
+    },
+    {
+      path: '/category',
+      name: 'AllPub',
+      component: AllPub
     },
     {
       path: '/pub/:id',

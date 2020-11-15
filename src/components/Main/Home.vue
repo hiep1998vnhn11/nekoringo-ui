@@ -56,7 +56,7 @@
     <v-row v-else>
       <v-col
         cols="4"
-        v-for="pub in pubs"
+        v-for="(pub, index) in pubs"
         :key="`${pub.id} pub`"
         class="text-center"
       >
@@ -64,6 +64,7 @@
           class="grey lighten-3"
           elevation="0"
           :to="{ name: 'Pub', params: { id: pub.id } }"
+          v-if="index < 3"
         >
           <v-hover v-slot="{ hover }">
             <v-avatar
@@ -167,7 +168,7 @@ export default {
       this.loading = true
       this.error = null
       try {
-        this.getAllPub()
+        await this.getAllPub()
       } catch (err) {
         this.error = err.toString()
       }
