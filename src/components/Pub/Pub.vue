@@ -214,7 +214,30 @@
           <v-card-text>
             <v-tabs-items v-model="tab">
               <v-tab-item value="rating">
+                <v-card v-if="!paramPub.ratings.length">
+                  <v-container class="text-center">
+                    {{ $t('This pub does not have any Rating.') }}
+                    <br />
+                    <router-link
+                      v-if="!isLoggedIn"
+                      style="text-decoration: none;"
+                      :to="{ name: 'Login' }"
+                    >
+                      {{ $t('Please login to rating ...') }}
+                    </router-link>
+                    <v-btn
+                      v-else-if="!!currentUser"
+                      text
+                      outlined
+                      class="text-capitalize"
+                      @click="dialog = true"
+                    >
+                      {{ $t('Write an review') }}
+                    </v-btn>
+                  </v-container>
+                </v-card>
                 <v-card
+                  v-else
                   tile
                   elevation="0"
                   outlined
@@ -258,7 +281,30 @@
                 </v-card>
               </v-tab-item>
               <v-tab-item value="comment">
+                <v-card v-if="!paramPub.comments.length">
+                  <v-container class="text-center">
+                    {{ $t('This pub does not have any Comment.') }}
+                    <br />
+                    <router-link
+                      v-if="!isLoggedIn"
+                      style="text-decoration: none;"
+                      :to="{ name: 'Login' }"
+                    >
+                      {{ $t('Please login to comment ...') }}
+                    </router-link>
+                    <v-btn
+                      v-else-if="!!currentUser"
+                      text
+                      outlined
+                      class="text-capitalize"
+                      @click="dialogComment = true"
+                    >
+                      {{ $t('Write an Comment') }}
+                    </v-btn>
+                  </v-container>
+                </v-card>
                 <v-card
+                  v-else
                   tile
                   outlined
                   elevation="0"
@@ -542,7 +588,7 @@ export default {
   },
   computed: {
     ...mapGetters('pub', ['paramPub']),
-    ...mapGetters('user', ['currentUser']),
+    ...mapGetters('user', ['currentUser', 'isLoggedIn']),
     current() {
       return this.currentUser && this.paramPub
         ? this.currentUser.id === this.paramPub.user_id
