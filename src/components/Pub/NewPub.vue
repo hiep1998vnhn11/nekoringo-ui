@@ -227,7 +227,7 @@ export default {
       if (this.valid) this.preview = true
     },
     async onSubmit() {
-      this.$refs.form.validate()
+      await this.$refs.form.validate()
       if (this.valid) return
       this.loading = true
       try {

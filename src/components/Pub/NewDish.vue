@@ -17,14 +17,17 @@
       </v-card-title>
       <v-divider />
       <v-card-text>
-        <v-form ref="form" lazy-validation>
+        <v-form ref="form" v-model="valid" lazy-validation>
           <v-row>
             <v-col cols="6">
               <v-text-field
                 v-model="name"
                 :counter="60"
                 :label="`${$t('Name')} *`"
-                required
+                :rules="[
+                  v => !!v || $t('Required'),
+                  v => (!!v && v.length <= 60) || 'Name too long!'
+                ]"
               ></v-text-field>
 
               <v-textarea
@@ -34,13 +37,17 @@
                 rows="3"
                 row-height="25"
                 :label="`${$t('Description')} *`"
-                required
+                :rules="[
+                  v => !!v || $t('Required'),
+                  v => (!!v && v.length <= 255) || 'Too long!'
+                ]"
               ></v-textarea>
 
               <v-select
                 :items="items"
                 :label="$t('Category')"
                 v-model="category"
+                :rules="[v => !!v || $t('Required')]"
               ></v-select>
             </v-col>
             <v-col cols="6">
@@ -51,6 +58,7 @@
                 :label="`${$t('Home photo')} *`"
                 @change="onFileChange"
                 v-model="image"
+                :rules="[v => !!v || $t('Required')]"
               ></v-file-input>
               <v-img height="200" :src="imageUrl" />
             </v-col>
@@ -62,7 +70,7 @@
         <v-spacer />
         <v-btn
           class="text-capitalize primary"
-          :disabled="!name || !description || !image"
+          :disabled="!valid"
           @click="onSaveDish"
         >
           {{ $t('Save') }}
@@ -81,6 +89,7 @@ import { mapActions } from 'vuex'
 export default {
   data() {
     return {
+      valid: true,
       dialog: false,
       loading: false,
       error: null,
@@ -102,18 +111,18 @@ export default {
           value: 3
         }
       ],
-      category: 1
+      category: null
     }
   },
   methods: {
     ...mapActions('pub', ['createDish']),
     onCancel() {
-      this.category = 1
-      this.name = this.description = ''
-      this.image = this.imageUrl = null
       this.dialog = false
+      this.$refs.form.reset()
     },
     async onSaveDish() {
+      await this.$refs.form.validate()
+      if (!this.valid) return
       this.loading = true
       this.error = null
       try {
