@@ -16,7 +16,6 @@
                 :label="`${$t('Name')} *`"
                 :rules="[v => !!v || $t('Required')]"
               ></v-text-field>
-
               <v-text-field
                 v-model="address"
                 :counter="120"
@@ -69,7 +68,6 @@
             :rules="[v => !!v || $t('Required')]"
             v-model="description"
           ></v-textarea>
-
           <v-checkbox
             v-model="checkbox"
             :rules="[v => !!v || 'You must agree to continue!']"
@@ -103,9 +101,42 @@
         <v-spacer />
       </v-card-actions>
     </v-card>
-    <v-dialog v-model="preview">
+    {{ preview }} {{ valid }}
+    <v-dialog width="1200" v-model="preview">
       <v-card>
-        Preview
+        <v-card-title>
+          <v-spacer />
+          <v-btn icon class="grey lighten-3" @click="preview = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-card-title>
+        <v-card-text class="mt-3">
+          <preview
+            :name="name"
+            :main_email="email"
+            :address="address"
+            :phone_number="phone"
+            :home_photo_path="imageUrl"
+            :video_path="videoPath"
+            :map_path="mapPath"
+            :description="description"
+          />
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn class="primary text-capitalize" large @click="onSubmit">
+            Submit
+          </v-btn>
+          <v-btn
+            color="error"
+            class="text-capitalize"
+            large
+            @click="preview = false"
+          >
+            Cancel
+          </v-btn>
+          <v-spacer />
+        </v-card-actions>
       </v-card>
     </v-dialog>
 
@@ -126,7 +157,9 @@
 
 <script>
 import { mapActions } from 'vuex'
+import Preview from './PreviewPub'
 export default {
+  components: { Preview },
   data() {
     const _this = this
     return {
@@ -189,9 +222,9 @@ export default {
       this.checkbox = false
       this.$router.push({ name: 'Home' })
     },
-    onPreview() {
-      this.$refs.form.validate()
-      if (!this.valid) this.preview = true
+    async onPreview() {
+      await this.$refs.form.validate()
+      if (this.valid) this.preview = true
     },
     async onSubmit() {
       this.$refs.form.validate()

@@ -4,7 +4,7 @@
       <v-col cols="2" width="200">
         <v-hover v-slot="{ hover }">
           <v-avatar class="avatar-outlined" tile color="grey" size="200">
-            <v-img :src="pub.home_photo_path">
+            <v-img :src="home_photo_path">
               <v-expand-transition>
                 <div
                   v-if="hover"
@@ -23,10 +23,10 @@
           <v-card-text class="text-body-1">
             <v-row no-gutters>
               <v-col cols="6">
-                <p>{{ $t('Name') }} : {{ pub.name }}</p>
-                <p>{{ $t('Email:') }} {{ pub.main_email }}</p>
-                <p>{{ $t('Address:') }} {{ pub.address }}</p>
-                <p>{{ $t('Phone Number:') }} {{ pub.phone_number }}</p>
+                <p>{{ $t('Name') }} : {{ name }}</p>
+                <p>{{ $t('Email:') }} {{ main_email }}</p>
+                <p>{{ $t('Address:') }} {{ address }}</p>
+                <p>{{ $t('Phone Number:') }} {{ phone_number }}</p>
               </v-col>
               <v-col> </v-col>
             </v-row>
@@ -48,7 +48,7 @@
               @click="
                 changeStatus = 'Introduce'
                 change = true
-                text = pub.description
+                text = description
               "
             >
               <v-icon color="primary" size="15">mdi-pencil</v-icon>
@@ -56,7 +56,7 @@
           </v-toolbar>
           <v-divider />
           <v-card-text>
-            {{ pub.description }}
+            {{ description }}
           </v-card-text>
         </v-card>
       </v-col>
@@ -64,7 +64,7 @@
         <iframe
           width="414"
           height="250"
-          :src="pub.video_path"
+          :src="video_path"
           frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowfullscreen
@@ -72,7 +72,7 @@
       </v-col>
       <v-col cols="4" class="text-center">
         <iframe
-          :src="pub.map_path"
+          :src="map_path"
           width="333"
           height="250"
           frameborder="0"
@@ -88,7 +88,16 @@
 
 <script>
 export default {
-  props: ['pub']
+  props: [
+    'name',
+    'main_email',
+    'address',
+    'description',
+    'map_path',
+    'video_path',
+    'phone_number',
+    'home_photo_path'
+  ]
 }
 </script>
 
