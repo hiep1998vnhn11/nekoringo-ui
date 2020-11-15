@@ -1,6 +1,5 @@
 <template>
   <v-container>
-    {{ error }}
     <v-card elevation="0" outlined tile>
       <v-card-title>
         <v-spacer />
@@ -8,34 +7,33 @@
         <v-spacer />
       </v-card-title>
       <v-card-text>
-        {{ $t('Hint: (*) is required!') }}
-        <v-form ref="form" lazy-validation>
+        <v-form ref="form" v-model="valid" lazy-validation>
           <v-row>
             <v-col cols="7">
               <v-text-field
                 v-model="name"
                 :counter="60"
                 :label="`${$t('Name')} *`"
-                required
+                :rules="[v => !!v || $t('Required')]"
               ></v-text-field>
 
               <v-text-field
                 v-model="address"
                 :counter="120"
                 :label="`${$t('Address')} *`"
-                required
+                :rules="[v => !!v || $t('Required')]"
               ></v-text-field>
               <v-text-field
                 v-model="phone"
                 :counter="12"
                 :label="`${$t('Phone number')} *`"
-                required
+                :rules="[v => !!v || $t('Required')]"
               ></v-text-field>
               <v-text-field
                 v-model="email"
                 :counter="55"
                 :label="`${$t('Main email')} *`"
-                required
+                :rules="[v => !!v || $t('Required')]"
               ></v-text-field>
             </v-col>
             <v-col cols="2">
@@ -46,6 +44,7 @@
                 :label="`${$t('Home photo')} *`"
                 @change="onFileChange"
                 v-model="image"
+                :rules="[v => !!v || $t('Required')]"
               ></v-file-input>
             </v-col>
             <v-col cols="3">
@@ -55,16 +54,19 @@
           <v-text-field
             v-model="mapPath"
             :label="$t('Google map path')"
+            :rules="mapRules"
           ></v-text-field>
           <v-text-field
             v-model="videoPath"
             :label="$t('Youtube video path')"
+            :rules="videoRules"
           ></v-text-field>
           <v-textarea
             auto-grow
             :label="$t('Description')"
             rows="3"
             row-height="20"
+            :rules="[v => !!v || $t('Required')]"
             v-model="description"
           ></v-textarea>
 
@@ -78,9 +80,9 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-
         <v-btn
-          :disabled="disable"
+          :disabled="!valid"
+          :loading="loading"
           color="primary"
           class="text-capitalize"
           @click="onSubmit"
@@ -88,10 +90,10 @@
           {{ $t('Submit') }}
         </v-btn>
         <v-btn
-          :disabled="disable"
+          :disabled="!valid"
           color="success"
           class="text-capitalize"
-          @click="preview = true"
+          @click="onPreview"
         >
           {{ $t('Preview') }}
         </v-btn>
@@ -106,48 +108,60 @@
         Preview
       </v-card>
     </v-dialog>
+
+    <v-dialog v-model="loading" hide-overlay persistent width="300">
+      <v-card color="primary" dark>
+        <v-card-text>
+          {{ $t('Submitting new pub... Please stand by a minute') }}
+          <v-progress-linear
+            indeterminate
+            color="white"
+            class="mb-0"
+          ></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
 export default {
-  data: () => ({
-    name: '',
-    address: '',
-    phone: '',
-    image: null,
-    imageUrl: null,
-    videoPath: '',
-    mapPath: '',
-    description: '',
-    checkbox: false,
-    preview: false,
-    loading: false,
-    error: null,
-    email: ''
-  }),
+  data() {
+    const _this = this
+    return {
+      valid: true,
+      name: '',
+      address: '',
+      phone: '',
+      image: null,
+      imageUrl: null,
+      videoPath: '',
+      mapPath: '',
+      description: '',
+      checkbox: false,
+      preview: false,
+      loading: false,
+      email: '',
+      mapRules: [
+        v => !!v || _this.$t('Required'),
+        v =>
+          v.indexOf('https://www.google.com/maps/embed') === 0 ||
+          _this.$t('Please input correct link to embedded the map')
+      ],
+      videoRules: [
+        v => !!v || _this.$t('Required'),
+        v =>
+          v.indexOf('https://www.youtube.com/embed') === 0 ||
+          _this.$t('Please input correct link to embedded the video')
+      ]
+    }
+  },
   computed: {
     src() {
       return this.imageUrl
         ? this.imageUrl
         : 'https://pdsohio.com/wp-content/uploads/2017/04/default-image.jpg'
-    },
-    disable() {
-      if (
-        !this.name ||
-        this.name.length > 60 ||
-        !this.address ||
-        this.address.length > 120 ||
-        !this.phone ||
-        this.phone.length > 12 ||
-        !this.email ||
-        this.email.length > 55 ||
-        !this.image ||
-        !this.checkbox
-      ) {
-        return true
-      } else return false
     }
   },
 
@@ -175,9 +189,14 @@ export default {
       this.checkbox = false
       this.$router.push({ name: 'Home' })
     },
+    onPreview() {
+      this.$refs.form.validate()
+      if (!this.valid) this.preview = true
+    },
     async onSubmit() {
+      this.$refs.form.validate()
+      if (this.valid) return
       this.loading = true
-      this.error = null
       try {
         let formData = new FormData()
         formData.append('name', this.name)
@@ -200,7 +219,6 @@ export default {
           title: 'Error',
           text: err.toString()
         })
-        this.error = err.toString()
       }
       this.name = this.phone = this.address = this.description = ''
       this.email = this.videoPath = this.mapPath = ''
