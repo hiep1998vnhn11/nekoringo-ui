@@ -6,7 +6,7 @@
       <v-btn
         icon
         small
-        v-if="!!currentUser && currentUser.id === paramPub.id"
+        v-if="!!currentUser && currentUser.id === paramPub.user_id"
         @click="onChangeDishes"
       >
         <v-icon color="primary" size="15">
@@ -16,8 +16,12 @@
     </v-card-title>
     <v-divider />
     <v-container class="mt-n3">
-      <v-row v-if="!!paramDishes.length">
-        <v-col cols="3" v-for="dish in paramDishes" :key="`dish-${dish.id}`">
+      <v-row v-if="paramDishes.length">
+        <v-col
+          cols="3"
+          v-for="dish in paramDishes"
+          :key="`dish-${dish.dish.id}`"
+        >
           <v-hover v-slot="{ hover }">
             <v-avatar
               class="avatar-outlined"
@@ -27,7 +31,7 @@
               width="266"
             >
               <v-img
-                :src="dish.photo_path"
+                :src="dish.dish.photo_path"
                 aspect-ratio="1"
                 class="grey lighten-2"
               >
@@ -49,14 +53,14 @@
                     class="d-flex transition-fast-in-fast-out orange darken-2 v-card--reveal black--text text-h6"
                     style="height: 180px; width: 266px;"
                   >
-                    <span>{{ dish.description }}</span>
+                    <span>{{ dish.dish.description }}</span>
                   </div>
                 </v-expand-transition>
               </v-img>
             </v-avatar>
           </v-hover>
           <div class="text-center">
-            {{ dish.name }}
+            {{ dish.dish.name }}
           </div>
         </v-col>
       </v-row>
@@ -98,7 +102,7 @@
                 <v-col
                   cols="3"
                   v-for="dish in tmpDishes"
-                  :key="`dish-${dish.id}`"
+                  :key="`dish-${dish.dish.id}`"
                 >
                   <v-hover v-slot="{ hover }">
                     <v-avatar
@@ -109,7 +113,7 @@
                       width="220"
                     >
                       <v-img
-                        :src="dish.photo_path"
+                        :src="dish.dish.photo_path"
                         aspect-ratio="1"
                         class="grey lighten-2"
                       >
@@ -131,18 +135,18 @@
                             class="d-flex transition-fast-in-fast-out orange darken-2 v-card--reveal black--text text-h6"
                             style="height: 150px; width: 220px;"
                           >
-                            <span>{{ dish.description }}</span>
+                            <span>{{ dish.dish.description }}</span>
                           </div>
                         </v-expand-transition>
                       </v-img>
                     </v-avatar>
                   </v-hover>
                   <div class="text-center">
-                    {{ dish.name }}
+                    {{ dish.dish.name }}
                     <br />
                     <v-btn
                       class="text-capitalize error"
-                      @click="onPreviewDelete(dish.id)"
+                      @click="onPreviewDelete(dish.dish.id)"
                     >
                       {{ $t('Delete') }}
                     </v-btn>
@@ -167,7 +171,11 @@
                 </v-col>
               </v-row>
               <v-row v-else-if="dishes.length">
-                <v-col cols="3" v-for="dish in dishes" :key="`dish-${dish.id}`">
+                <v-col
+                  cols="3"
+                  v-for="dish in dishes"
+                  :key="`dish-have-${dish.id}`"
+                >
                   <v-hover v-slot="{ hover }">
                     <v-avatar
                       class="avatar-outlined"
@@ -211,7 +219,6 @@
                     <v-btn
                       class="text-capitalize primary"
                       @click="onPreviewAdd(dish)"
-                      :disabled="tmpDishes.indexOf(dish) > -1"
                     >
                       {{ $t('Add') }}
                     </v-btn>
@@ -278,8 +285,19 @@ export default {
       loadingSave: false
     }
   },
+  mounted() {
+    this.fetchData()
+  },
   methods: {
-    ...mapActions('pub', ['getDishes', 'getParamDishes', 'addDishToPub']),
+    ...mapActions('pub', ['getDishes', 'getParamDishes', 'changeDish']),
+    async fetchData() {
+      this.loading = true
+      try {
+        await this.getParamDishes(this.$route.params.id)
+      } catch (err) {
+        this.error = err.toString()
+      }
+    },
     async onChangeDishes() {
       this.dialog = this.loading = true
       try {
@@ -296,10 +314,22 @@ export default {
         : (this.popup = true)
     },
     onPreviewAdd(dish) {
-      this.tmpDishes = [dish, ...this.tmpDishes]
+      let valid = true
+      this.tmpDishes.forEach(function(i) {
+        if (i.dish.id === dish.id) valid = false
+      })
+      if (valid) {
+        this.tmpDishes = [{ dish: dish }, ...this.tmpDishes]
+      } else {
+        this.$swal({
+          icon: 'warning',
+          title: this.$t('Warning'),
+          text: this.$t('Your pub had had this dish!')
+        })
+      }
     },
     onPreviewDelete(dishId) {
-      this.tmpDishes = this.tmpDishes.filter(dish => dish.id !== dishId)
+      this.tmpDishes = this.tmpDishes.filter(dish => dish.dish.id !== dishId)
     },
     isEqual(array1, array2) {
       if (array1.length !== array2.length) return false
@@ -315,9 +345,14 @@ export default {
       if (!this.isEqual(this.tmpDishes, this.paramDishes)) {
         this.loadingSave = true
         let dishArr = []
-        this.tmpDishes.forEach(dish => dishArr.push(dish.id))
+        this.tmpDishes.forEach(dish => dishArr.push(dish.dish.id))
         try {
-          await this.addDishToPub(dishArr)
+          await this.changeDish({
+            pub_id: this.$route.params.id,
+            formData: {
+              dishes: dishArr
+            }
+          })
           this.$swal({
             icon: 'success',
             title: this.$t('Success'),

@@ -665,7 +665,6 @@ export default {
       this.error = null
       try {
         await this.getParamPub(this.$route.params.id)
-        await this.getParamDishes(this.$route.params.id)
       } catch (err) {
         this.error = err.toString()
       }

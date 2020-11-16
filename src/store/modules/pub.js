@@ -57,16 +57,14 @@ const actions = {
     commit('SET_DISH', response.data.data)
   },
   async getParamDishes({ commit }, pubId) {
-    let url = `/user/pub/${pubId}/dishes/store`
+    let url = `/user/pub/${pubId}/dish/store`
     const response = await axios.get(url)
     commit('SET_PARAM_DISH', response.data.data)
   },
-  async addDishToPub({ commit }, param) {
-    let url = `/user/dish/${param.dish_id}/add`
-    const response = await axios.post(url, {
-      pub_id: param.pub_id
-    })
-    commit('ADD_DISH', response.data.data)
+  async changeDish({ commit }, param) {
+    let url = `/user/pub/${param.pub_id}/dish/change`
+    const response = await axios.post(url, param.formData)
+    commit('SET_PARAM_DISH', response.data.data)
   },
   async createDish({ commit }, formData) {
     console.log(formData)
@@ -104,9 +102,6 @@ const mutations = {
   },
   SET_PARAM_DISH: function(state, dishes) {
     state.paramDishes = dishes
-  },
-  ADD_DISH: function(state, dish) {
-    state.paramDishes.unshift(dish)
   },
   DELETE_DISH: function(state, dishId) {
     state.paramDishes = state.paramDishes.filter(dish => dish.id !== dishId)
