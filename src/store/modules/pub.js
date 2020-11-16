@@ -4,20 +4,27 @@ const state = {
   paramPub: null,
   myPubs: [],
   pubs: [],
-  dishes: []
+  dishes: [],
+  categories: []
 }
 
 const getters = {
   paramPub: state => state.paramPub,
   myPubs: state => state.myPubs,
   pubs: state => state.pubs,
-  dishes: state => state.dishes
+  dishes: state => state.dishes,
+  categories: state => state.categories
 }
 
 const actions = {
   async getParamPub({ commit }, id) {
     const response = await axios.get(`/user/pub/${id}/get`)
     commit('SET_PARAM_PUB', response.data.data)
+  },
+  async getCategories({ commit }) {
+    let url = 'user/category/store'
+    const response = await axios.get(url)
+    commit('SET_CATEGORIES', response.data.data)
   },
   async createPub({ commit }, formData) {
     console.log(formData)
@@ -77,6 +84,9 @@ const mutations = {
   },
   CREATE_DISH: function(state, dish) {
     state.dishes.push(dish)
+  },
+  SET_CATEGORIES: function(state, categories) {
+    state.categories = categories
   }
 }
 

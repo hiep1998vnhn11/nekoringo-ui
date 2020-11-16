@@ -1,21 +1,27 @@
 <template>
   <v-row>
     <v-col cols="3">
+      <v-card v-if="loading" tile outlined>
+        <v-skeleton-loader class="mx-auto" type="card"></v-skeleton-loader>
+      </v-card>
       <v-card
+        v-else
         tile
         outlined
         height="100"
-        v-for="i in tabs"
-        :key="i.text"
+        class="mt-1"
+        v-for="i in categories"
+        :key="`category-${i.name}`"
         @click="
-          tab = i.text
-          fetchDish(i.text)
+          tab = i.name
+          fetchDish(i.id)
         "
-        exact-active-class="primary"
+        exact
+        active-class="red"
       >
         <v-img height="100" :src="i.src">
           <v-container class="text-center text-h6 font-weight-black red--text">
-            {{ i.text }}
+            {{ i.name }}
           </v-container>
         </v-img>
       </v-card>
@@ -167,12 +173,22 @@ export default {
       items: ['Bách Khoa', 'Hai Bà Trưng', 'Trần Duy Hưng']
     }
   },
-  computed: mapGetters('pub', ['dishes']),
+  computed: mapGetters('pub', ['dishes', 'categories']),
   mounted() {
-    this.fetchDish('Buffet')
+    this.fetchCategories()
+    this.fetchDish(1)
   },
   methods: {
-    ...mapActions('pub', ['getDishes']),
+    ...mapActions('pub', ['getDishes', 'getCategories']),
+    async fetchCategories() {
+      this.loading = true
+      try {
+        await this.getCategories()
+      } catch (err) {
+        this.error = err.toString()
+      }
+      this.loading = false
+    },
     async fetchDish(category, searchKey = null) {
       this.loadingDish = true
       this.error = null
