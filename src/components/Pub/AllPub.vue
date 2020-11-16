@@ -9,10 +9,10 @@
         ></v-skeleton-loader>
       </v-col>
     </v-row>
-    <v-row v-else>
+    <v-row v-else-if="pubs_paginate.length">
       <v-col
         cols="4"
-        v-for="pub in pubs"
+        v-for="pub in pubs_paginate"
         :key="`${pub.id} pub`"
         class="text-center"
       >
@@ -46,6 +46,18 @@
         </v-card>
       </v-col>
     </v-row>
+    <v-row justify="center">
+      <v-col cols="8">
+        <v-container class="max-width">
+          <v-pagination
+            v-model="page"
+            class="my-4"
+            :length="Math.floor(pubs.length / 6) + 1"
+            :total-visible="7"
+          ></v-pagination>
+        </v-container>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -55,8 +67,13 @@ export default {
   data() {
     return {
       loading: false,
-      error: null
+      error: null,
+      page: 1,
+      pubs_paginate: []
     }
+  },
+  watch: {
+    page: 'changePage'
   },
   computed: {
     ...mapGetters('pub', ['pubs'])
@@ -72,10 +89,18 @@ export default {
         this.error = err.toString()
       }
       this.loading = false
+    },
+    changePage() {
+      var i
+      this.pubs_paginate = []
+      for (i = (this.page - 1) * 6; i < this.page * 6; i++) {
+        if (this.pubs[i]) this.pubs_paginate.push(this.pubs[i])
+      }
     }
   },
-  mounted() {
-    this.fetchData()
+  async mounted() {
+    await this.fetchData()
+    this.changePage()
   }
 }
 </script>

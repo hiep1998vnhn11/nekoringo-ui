@@ -160,5 +160,19 @@
   "Please input correct link to embedded the video": "Please input correct link to embedded the video",
   "Required": "Required",
   "Submitting new pub... Please stand by a minute": "Submitting new pub... Please stand by a minute",
-  "Hint: (*) is required!": "Hint: (*) is required!"
+  "Hint: (*) is required!": "Hint: (*) is required!",
+  "This pub does not have any Comment.": "This pub does not have any Comment.",
+  "Please login to comment ...": "Please login to comment ...",
+  "Add": "Add",
+  "Dishes in this Pub": "Dishes in this Pub",
+  "Your pub does not have any Dish!": "Your pub does not have any Dish!",
+  "Add dish to your pub now!": "Add dish to your pub now!",
+  "This pub does not have any Dish!": "This pub does not have any Dish!",
+  "Change your pub dishes": "Change your pub dishes",
+  "Delete": "Delete",
+  "Close without save": "Close without save",
+  "Your changed will be removed. Continue to close?": "Your changed will be removed. Continue to close?",
+  "Are you sure?": "Are you sure?",
+  "Error!": "Error!",
+  "Write an Comment": "Write an Comment"
 }

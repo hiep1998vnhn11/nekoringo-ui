@@ -262,7 +262,7 @@
                     <v-btn
                       icon
                       small
-                      v-if="currentUser.id === rating.user.id"
+                      v-if="!!currentUser && currentUser.id === rating.user.id"
                       @click="deleteRating(rating.id)"
                     >
                       <v-icon size="15" color="error">mdi-trash-can</v-icon>
@@ -321,7 +321,7 @@
                     <v-btn
                       icon
                       small
-                      v-if="currentUser.id === comment.user.id"
+                      v-if="!!currentUser && currentUser.id === comment.user.id"
                       @click="deleteComment(comment.id)"
                     >
                       <v-icon size="15" color="error">mdi-trash-can</v-icon>
@@ -343,6 +343,9 @@
           </v-card-text>
         </v-card>
       </v-col>
+    </v-row>
+    <v-row v-else>
+      {{ error }}
     </v-row>
 
     <v-dialog width="800" v-model="dialog">
@@ -556,7 +559,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import axios from 'axios'
-import Dish from '@/components/Main/Dish'
+import Dish from './Dish'
 export default {
   components: {
     Dish
@@ -583,11 +586,12 @@ export default {
       phone_number: '',
       changeInfo: false,
       dialogComment: false,
-      loadingComment: false
+      loadingComment: false,
+      show: false
     }
   },
   computed: {
-    ...mapGetters('pub', ['paramPub']),
+    ...mapGetters('pub', ['paramPub', 'paramDishes']),
     ...mapGetters('user', ['currentUser', 'isLoggedIn']),
     current() {
       return this.currentUser && this.paramPub
@@ -661,6 +665,7 @@ export default {
       this.error = null
       try {
         await this.getParamPub(this.$route.params.id)
+        await this.getParamDishes(this.$route.params.id)
       } catch (err) {
         this.error = err.toString()
       }

@@ -5,6 +5,7 @@ const state = {
   myPubs: [],
   pubs: [],
   dishes: [],
+  paramDishes: [],
   categories: []
 }
 
@@ -13,7 +14,8 @@ const getters = {
   myPubs: state => state.myPubs,
   pubs: state => state.pubs,
   dishes: state => state.dishes,
-  categories: state => state.categories
+  categories: state => state.categories,
+  paramDishes: state => state.paramDishes
 }
 
 const actions = {
@@ -54,6 +56,18 @@ const actions = {
     const response = await axios.get(url)
     commit('SET_DISH', response.data.data)
   },
+  async getParamDishes({ commit }, pubId) {
+    let url = `/user/pub/${pubId}/dishes/store`
+    const response = await axios.get(url)
+    commit('SET_PARAM_DISH', response.data.data)
+  },
+  async addDishToPub({ commit }, param) {
+    let url = `/user/dish/${param.dish_id}/add`
+    const response = await axios.post(url, {
+      pub_id: param.pub_id
+    })
+    commit('ADD_DISH', response.data.data)
+  },
   async createDish({ commit }, formData) {
     console.log(formData)
     let url = `/user/dish/create`
@@ -83,10 +97,19 @@ const mutations = {
     state.dishes = dishes
   },
   CREATE_DISH: function(state, dish) {
-    state.dishes.push(dish)
+    state.dishes.unshift(dish)
   },
   SET_CATEGORIES: function(state, categories) {
     state.categories = categories
+  },
+  SET_PARAM_DISH: function(state, dishes) {
+    state.paramDishes = dishes
+  },
+  ADD_DISH: function(state, dish) {
+    state.paramDishes.unshift(dish)
+  },
+  DELETE_DISH: function(state, dishId) {
+    state.paramDishes = state.paramDishes.filter(dish => dish.id !== dishId)
   }
 }
 
