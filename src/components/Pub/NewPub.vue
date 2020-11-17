@@ -228,7 +228,7 @@ export default {
     },
     async onSubmit() {
       await this.$refs.form.validate()
-      if (this.valid) return
+      if (!this.valid) return
       this.loading = true
       try {
         let formData = new FormData()
@@ -256,6 +256,7 @@ export default {
       this.name = this.phone = this.address = this.description = ''
       this.email = this.videoPath = this.mapPath = ''
       this.image = this.imageUrl = null
+      this.$refs.form.resetValidation()
       this.loading = false
     }
   }
