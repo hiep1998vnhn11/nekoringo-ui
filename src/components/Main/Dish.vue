@@ -55,10 +55,9 @@
           <v-col cols="3">
             <v-text-field
               v-model="search"
-              prepend-inner-icon="mdi-magnify"
+              prepend-icon="mdi-magnify"
               :label="$t('Search')"
               outlined
-              clearable
               dense
               rounded
               single-line
