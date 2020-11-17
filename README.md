@@ -4,7 +4,7 @@ Nekoringo v 1.0
 
 ## Required
 
-yarn: latest ver
+yarn: latest ver <br />
 node: 10.x or later
 
 ## Usage
