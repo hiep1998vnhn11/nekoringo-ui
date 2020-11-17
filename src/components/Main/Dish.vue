@@ -14,7 +14,7 @@
         :key="`category-${i.name}`"
         @click="
           tab = i.id
-          fetchDish(i.id)
+          fetchDish(i.id, true)
         "
         exact
         active-class="red"
@@ -63,7 +63,7 @@
               rounded
               single-line
               hide-details
-              @input="fetchDish(tab, search)"
+              @input="fetchDish(tab, true, search)"
             ></v-text-field>
           </v-col>
         </v-toolbar>
@@ -101,7 +101,7 @@
                 <v-row>
                   <v-col
                     cols="3"
-                    v-for="(dish, index) in dishes"
+                    v-for="(dish, index) in dishes.data"
                     :key="`dish-${dish.id}`"
                   >
                     <v-hover v-slot="{ hover }">
@@ -148,6 +148,14 @@
               </v-card>
             </v-tab-item>
           </v-tabs-items>
+          <v-container class="text-center" v-show="!loading">
+            <v-pagination
+              v-model="page"
+              :length="dishes.last_page"
+              circle
+              :total-visible="7"
+            ></v-pagination>
+          </v-container>
         </v-card-text>
       </v-card>
     </v-col>
@@ -166,7 +174,7 @@
         </v-card-title>
         <v-divider />
         <v-card-text>
-          <v-row v-if="loading">
+          <v-row v-if="loadingPub">
             <v-col cols="4" v-for="n in 3" :key="n">
               <v-skeleton-loader
                 class="mx-auto"
@@ -175,10 +183,10 @@
               ></v-skeleton-loader>
             </v-col>
           </v-row>
-          <v-row v-else-if="pubs.length">
+          <v-row v-else-if="pubs.data.length">
             <v-col
               cols="4"
-              v-for="pub in pubs"
+              v-for="pub in pubs.data"
               :key="`${pub.pub_id}-pub`"
               class="text-center"
             >
@@ -212,12 +220,20 @@
               </v-card>
             </v-col>
           </v-row>
-          <v-row v-else class="text-body-1">
+          <v-container v-else class="text-body-1 text-center">
             {{ $t('Not any pub has') }}
             <span class="ml-1" v-if="!!selectedDish">
               {{ selectedDish.name }}
             </span>
-          </v-row>
+          </v-container>
+          <v-container class="text-center" v-show="pubs.data.length">
+            <v-pagination
+              v-model="pagePub"
+              :length="pubs.last_page"
+              circle
+              :total-visible="7"
+            ></v-pagination>
+          </v-container>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -246,10 +262,12 @@ export default {
       search: '',
       loadingDish: false,
       items: ['Bách Khoa', 'Hai Bà Trưng', 'Trần Duy Hưng'],
-      pubs: [],
+      pubs: { data: [] },
       loadingPub: false,
       dialog: false,
-      selectedDish: null
+      selectedDish: null,
+      page: 1,
+      pagePub: 1
     }
   },
   computed: mapGetters('pub', ['dishes', 'categories']),
@@ -268,11 +286,16 @@ export default {
       }
       this.loading = false
     },
-    async fetchDish(category, searchKey = null) {
+    async fetchDish(category, renew = false, searchKey = null) {
       this.loadingDish = true
       this.error = null
+      if (renew) this.page = 1
       try {
-        await this.getDishes({ category: category, searchKey: searchKey })
+        await this.getDishes({
+          category: category,
+          searchKey: searchKey,
+          page: this.page
+        })
       } catch (err) {
         this.error = err.toString()
       }
@@ -281,23 +304,32 @@ export default {
     async fetchPub(dishId) {
       this.loadingPub = true
       try {
-        let url = `user/dish/${dishId}/pub/store`
+        let url = `user/dish/${dishId}/pub/store?page=${this.pagePub}`
         const response = await axios.get(url)
-        this.pubs = response.data.data.data
+        this.pubs = response.data.data
       } catch (err) {
         this.error = err.toString()
       }
       this.loadingPub = false
     },
     async onSelectDish(dishId, i) {
-      this.selectedDish = this.dishes[i]
+      this.selectedDish = this.dishes.data[i]
       this.fetchPub(dishId)
       this.dialog = true
     },
     onCloseDialog() {
       this.dialog = false
       this.selectedDish = null
-      this.pubs = []
+      this.pubs = { data: [] }
+      this.pagePub = 1
+    }
+  },
+  watch: {
+    page: function() {
+      this.fetchDish(this.tab, this.searchKey)
+    },
+    pagePub: function() {
+      this.fetchPub(this.selectedDish.id)
     }
   }
 }

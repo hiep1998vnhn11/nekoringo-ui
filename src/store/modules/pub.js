@@ -39,10 +39,10 @@ const actions = {
     console.log(response)
     commit('CREATE_PUB', response.data.data)
   },
-  async getAllPub({ commit }) {
-    let url = '/user/pub/store'
+  async getAllPub({ commit }, param) {
+    let url = `/user/pub/store?page=${param.page}`
     const response = await axios.get(url)
-    commit('SET_ALL_PUB', response.data.data.data)
+    commit('SET_ALL_PUB', response.data.data)
   },
   async getMyPub({ commit }) {
     let url = '/user/pub/store_my_pub'
@@ -51,10 +51,10 @@ const actions = {
   },
   async getDishes({ commit }, param) {
     let url = param.searchKey
-      ? `/user/dish/store?category=${param.category}&search_key=${param.searchKey}`
-      : `/user/dish/store?category=${param.category}`
+      ? `/user/dish/store?category=${param.category}&search_key=${param.searchKey}&page=${param.page}`
+      : `/user/dish/store?category=${param.category}&page=${param.page}`
     const response = await axios.get(url)
-    commit('SET_DISH', response.data.data.data)
+    commit('SET_DISH', response.data.data)
   },
   async getParamDishes({ commit }, pubId) {
     let url = `/user/pub/${pubId}/dish/store`

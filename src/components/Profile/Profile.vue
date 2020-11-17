@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-card :loading="loading" tile elevation="0" outlined>
+    <v-card :loading="loading" class="rounded-lg" elevation="0" outlined>
       <v-list-item two-line>
         <v-list-item-content>
           <v-list-item-title class="text-h6">
@@ -119,21 +119,24 @@
         </v-row>
       </v-card-text>
     </v-card>
-    <v-card :loading="loadingPub" tile elevation="0" outlined>
+    <v-card
+      :loading="loadingPub"
+      class="rounded-lg mt-3"
+      elevation="0"
+      outlined
+    >
       <v-card-title>
         {{ $t('My Pubs') }}
       </v-card-title>
       <v-card-text>
         <v-row>
-          <v-col v-for="pub in myPubs" :key="pub.name">
-            <v-card
-              tile
-              width="200"
-              :to="{ name: 'Pub', params: { id: pub.id } }"
-            >
+          <v-col v-for="pub in myPubs" :key="pub.name" cols="4">
+            <v-card tile :to="{ name: 'Pub', params: { id: pub.id } }">
               <v-img height="200" :src="pub.home_photo_path" />
               <v-card-actions>
+                <v-spacer />
                 {{ pub.name }}
+                <v-spacer />
               </v-card-actions>
             </v-card>
           </v-col>

@@ -9,10 +9,10 @@
         ></v-skeleton-loader>
       </v-col>
     </v-row>
-    <v-row v-else-if="pubs_paginate.length">
+    <v-row v-else>
       <v-col
         cols="4"
-        v-for="pub in pubs_paginate"
+        v-for="pub in pubs.data"
         :key="`${pub.id} pub`"
         class="text-center"
       >
@@ -48,11 +48,11 @@
     </v-row>
     <v-row justify="center">
       <v-col cols="8">
-        <v-container class="max-width">
+        <v-container class="max-width" v-show="!loading">
           <v-pagination
             v-model="page"
             class="my-4"
-            :length="Math.floor(pubs.length / 6) + 1"
+            :length="pubs.last_page"
             :total-visible="7"
           ></v-pagination>
         </v-container>
@@ -84,25 +84,29 @@ export default {
       this.loading = true
       this.error = null
       try {
-        await this.getAllPub()
+        await this.getAllPub({ page: this.page })
       } catch (err) {
         this.error = err.toString()
       }
       this.loading = false
     },
     changePage() {
-      var i
-      this.pubs_paginate = []
-      for (i = (this.page - 1) * 6; i < this.page * 6; i++) {
-        if (this.pubs[i]) this.pubs_paginate.push(this.pubs[i])
-      }
+      this.fetchData()
     }
   },
   async mounted() {
     await this.fetchData()
-    this.changePage()
   }
 }
 </script>
 
-<style></style>
+<style>
+.v-card--reveal {
+  align-items: center;
+  bottom: 0;
+  justify-content: center;
+  opacity: 0.5;
+  position: absolute;
+  width: 100%;
+}
+</style>

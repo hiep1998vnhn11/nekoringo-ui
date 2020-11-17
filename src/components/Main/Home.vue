@@ -34,7 +34,6 @@
           </v-window>
           <v-card-actions>
             <v-spacer />
-
             <v-spacer />
           </v-card-actions>
         </v-card>
@@ -56,7 +55,7 @@
     <v-row v-else>
       <v-col
         cols="4"
-        v-for="(pub, index) in pubs"
+        v-for="(pub, index) in pubs.data"
         :key="`${pub.id} pub`"
         class="text-center"
       >
@@ -168,7 +167,7 @@ export default {
       this.loading = true
       this.error = null
       try {
-        await this.getAllPub()
+        await this.getAllPub({ page: 1 })
       } catch (err) {
         this.error = err.toString()
       }
