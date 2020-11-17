@@ -16,10 +16,10 @@
     </v-card-title>
     <v-divider />
     <v-container class="mt-n3">
-      <v-row v-if="paramDishes.length">
+      <v-row v-if="paramDishes.data.length">
         <v-col
           cols="3"
-          v-for="dish in paramDishes"
+          v-for="dish in paramDishes.data"
           :key="`dish-${dish.dish.id}`"
         >
           <v-hover v-slot="{ hover }">
@@ -87,7 +87,7 @@
         <v-card-title>
           {{ $t('Change your pub dishes') }}
           <v-spacer />
-          <v-btn icon @click="onCancel">
+          <v-btn icon @click="dialog = false">
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-card-title>
@@ -98,10 +98,10 @@
               Your dishes
             </v-card-title>
             <v-container>
-              <v-row v-if="tmpDishes.length">
+              <v-row v-if="paramDishes.data.length">
                 <v-col
                   cols="3"
-                  v-for="dish in tmpDishes"
+                  v-for="dish in paramDishes.data"
                   :key="`dish-${dish.dish.id}`"
                 >
                   <v-hover v-slot="{ hover }">
@@ -146,13 +146,22 @@
                     <br />
                     <v-btn
                       class="text-capitalize error"
-                      @click="onPreviewDelete(dish.dish.id)"
+                      @click="onDeleteDish(dish.id)"
+                      :loading="loadingChange === dish.id"
                     >
                       {{ $t('Delete') }}
                     </v-btn>
                   </div>
                 </v-col>
               </v-row>
+              <div class="text-center">
+                <v-pagination
+                  v-model="page"
+                  :length="paramDishes.last_page"
+                  circle
+                  :total-visible="7"
+                ></v-pagination>
+              </div>
             </v-container>
           </v-card>
           <v-card tile outlined class="mt-3">
@@ -170,10 +179,10 @@
                   ></v-skeleton-loader>
                 </v-col>
               </v-row>
-              <v-row v-else-if="dishes.length">
+              <v-row v-else>
                 <v-col
                   cols="3"
-                  v-for="dish in dishes"
+                  v-for="dish in dishes.data"
                   :key="`dish-have-${dish.id}`"
                 >
                   <v-hover v-slot="{ hover }">
@@ -218,22 +227,31 @@
                     <br />
                     <v-btn
                       class="text-capitalize primary"
-                      @click="onPreviewAdd(dish)"
+                      @click="onAddDish(dish.id)"
+                      :loading="loadingChange === dish.id"
                     >
                       {{ $t('Add') }}
                     </v-btn>
                   </div>
                 </v-col>
               </v-row>
+              <v-container class="text-center">
+                <v-pagination
+                  v-model="page"
+                  :length="dishes.last_page"
+                  circle
+                  :total-visible="7"
+                ></v-pagination>
+              </v-container>
             </v-card-text>
           </v-card>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn class="primary text-capitalize" @click="onSave">
+          <v-btn class="primary text-capitalize" @click="dialog = false">
             {{ $t('Save') }}
           </v-btn>
-          <v-btn class="error text-capitalize" @click="onCancel">
+          <v-btn class="error text-capitalize" @click="dialog = false">
             {{ $t('Cancel') }}
           </v-btn>
         </v-card-actions>
@@ -282,27 +300,89 @@ export default {
       error: null,
       popup: false,
       tmpDishes: [],
-      loadingSave: false
+      loadingSave: false,
+      page: 1,
+      pageDish: 1,
+      loadingChange: null
     }
   },
   mounted() {
     this.fetchData()
   },
   methods: {
-    ...mapActions('pub', ['getDishes', 'getParamDishes', 'changeDish']),
+    ...mapActions('pub', [
+      'getDishes',
+      'getParamDishes',
+      'changeDish',
+      'addDish',
+      'deleteDish'
+    ]),
     async fetchData() {
-      this.loading = true
+      this.loadingChange = true
       try {
-        await this.getParamDishes(this.$route.params.id)
+        await this.getParamDishes({
+          pubId: this.$route.params.id,
+          page: this.pageDish
+        })
       } catch (err) {
         this.error = err.toString()
       }
+      this.loadingChange = null
+    },
+    async onAddDish(dishId) {
+      this.loadingChange = dishId
+      try {
+        await this.addDish({
+          pubId: this.$route.params.id,
+          dishId: dishId
+        })
+        this.page = 1
+        await this.getParamDishes({ pubId: this.$route.params.id })
+        this.$swal({
+          icon: 'success',
+          title: this.$t('Success'),
+          text: this.$t('Add dish success')
+        })
+      } catch (err) {
+        this.$swal({
+          icon: 'error',
+          title: this.$t('Error'),
+          text: err.toString()
+        })
+      }
+      this.loadingChange = null
+    },
+    async onDeleteDish(hasDishId) {
+      this.loadingChange = hasDishId
+      try {
+        await this.deleteDish({
+          pubId: this.$route.params.id,
+          hasDishId: hasDishId
+        })
+        this.page = 1
+        await this.getParamDishes({ pubId: this.$route.params.id })
+        this.$swal({
+          icon: 'success',
+          title: this.$t('Success'),
+          text: this.$t('Delete dish success')
+        })
+      } catch (err) {
+        this.$swal({
+          icon: 'error',
+          title: this.$t('Error'),
+          text: err.toString()
+        })
+      }
+      this.loadingChange = null
     },
     async onChangeDishes() {
+      if (this.dishes.data.length) {
+        this.dialog = true
+        return
+      }
       this.dialog = this.loading = true
       try {
-        await this.getDishes({ category: 0 })
-        this.tmpDishes = this.paramDishes
+        await this.getDishes({ category: 0, page: this.page })
       } catch (err) {
         this.error = err.toString()
       }
@@ -312,6 +392,7 @@ export default {
       this.isEqual(this.tmpDishes, this.paramDishes)
         ? (this.dialog = false)
         : (this.popup = true)
+      this.page = 1
     },
     onPreviewAdd(dish) {
       let valid = true
@@ -369,6 +450,10 @@ export default {
       this.dialog = this.loadingSave = false
       this.tmpDishes = []
     }
+  },
+  watch: {
+    page: 'onChangeDishes',
+    pageDish: 'fetchData'
   }
 }
 </script>
