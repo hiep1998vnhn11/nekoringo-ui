@@ -1,18 +1,15 @@
-# Nekoringo
+# Release
+
+Nekoringo v 1.0
+
+## Required
+
+yarn: latest ver <br />
+node: 10.x or later
 
 ## Usage
 
-### Step 1: (If not run server api at local)
-
-Change config/dev.env.js
-
-```
-VUE_APP_SERVER_BASE_URL: '"https://nekoringo-api.herokuapp.com/api"'
-```
-
-'https://nekoringo-api.herokuapp.com/api' is server api!
-
-### Step 2:
+### Run Ui
 
 ```
 yarn install

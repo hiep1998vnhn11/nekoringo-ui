@@ -83,7 +83,7 @@ const mutations = {
     state.paramPub = pub
   },
   CREATE_PUB: function(state, pub) {
-    state.pubs.unshift(pub)
+    state.pubs.push(pub)
   },
   SET_ALL_PUB: function(state, pubs) {
     state.pubs = pubs

@@ -41,18 +41,6 @@
             <v-spacer />
             {{ $t('Introduce') }}
             <v-spacer />
-            <v-btn
-              icon
-              small
-              v-if="current"
-              @click="
-                changeStatus = 'Introduce'
-                change = true
-                text = description
-              "
-            >
-              <v-icon color="primary" size="15">mdi-pencil</v-icon>
-            </v-btn>
           </v-toolbar>
           <v-divider />
           <v-card-text>
