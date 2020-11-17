@@ -13,7 +13,7 @@
         v-for="i in categories"
         :key="`category-${i.name}`"
         @click="
-          tab = i.name
+          tab = i.id
           fetchDish(i.id)
         "
         exact
@@ -69,8 +69,22 @@
         </v-toolbar>
         <v-divider />
         <v-card-text>
-          <v-tabs-items v-model="tab">
-            <v-tab-item v-for="i in tabs" :key="i.text" :value="i.text">
+          <v-row v-if="loading">
+            <v-col v-for="n in 4" :key="n">
+              <v-skeleton-loader
+                class="mx-auto"
+                max-width="200"
+                max-height="150"
+                type="card"
+              ></v-skeleton-loader>
+            </v-col>
+          </v-row>
+          <v-tabs-items v-model="tab" v-else>
+            <v-tab-item
+              v-for="i in categories"
+              :key="`categori-${i.id}`"
+              :value="i.id"
+            >
               <v-card flat v-if="loadingDish">
                 <v-row>
                   <v-col v-for="n in 4" :key="n">
@@ -87,7 +101,7 @@
                 <v-row>
                   <v-col
                     cols="3"
-                    v-for="dish in dishes"
+                    v-for="(dish, index) in dishes"
                     :key="`dish-${dish.id}`"
                   >
                     <v-hover v-slot="{ hover }">
@@ -97,6 +111,7 @@
                         color="grey"
                         height="150"
                         width="200"
+                        @click="onSelectDish(dish.id, index)"
                       >
                         <v-img
                           :src="dish.photo_path"
@@ -136,12 +151,89 @@
         </v-card-text>
       </v-card>
     </v-col>
+
+    <v-dialog v-model="dialog" width="1200">
+      <v-card :loading="loadingPub">
+        <v-card-title>
+          {{ $t('Some pubs have') }}
+          <span v-if="!!selectedDish" class="ml-1">
+            {{ selectedDish.name }}
+          </span>
+          <v-spacer />
+          <v-btn icon @click="onCloseDialog">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-card-title>
+        <v-divider />
+        <v-card-text>
+          <v-row v-if="loading">
+            <v-col cols="4" v-for="n in 3" :key="n">
+              <v-skeleton-loader
+                class="mx-auto"
+                max-width="300"
+                type="card"
+              ></v-skeleton-loader>
+            </v-col>
+          </v-row>
+          <v-row v-else-if="pubs.length">
+            <v-col
+              cols="4"
+              v-for="pub in pubs"
+              :key="`${pub.pub_id}-pub`"
+              class="text-center"
+            >
+              <v-card
+                class="grey lighten-3"
+                elevation="0"
+                :to="{ name: 'Pub', params: { id: pub.pub_id } }"
+              >
+                <v-hover v-slot="{ hover }">
+                  <v-avatar
+                    class="avatar-outlined"
+                    tile
+                    color="grey"
+                    height="200"
+                    width="350"
+                  >
+                    <v-img :src="pub.pub.home_photo_path">
+                      <v-expand-transition>
+                        <div
+                          v-if="hover"
+                          class="d-flex transition-fast-in-fast-out blue lighten-4 v-card--reveal black--text text-h6"
+                          style="height: 200px; width: 350px;"
+                        >
+                          <v-container>{{ pub.pub.description }}</v-container>
+                        </div>
+                      </v-expand-transition>
+                    </v-img>
+                  </v-avatar>
+                </v-hover>
+                {{ pub.pub.name }}
+              </v-card>
+            </v-col>
+          </v-row>
+          <v-row v-else class="text-body-1">
+            {{ $t('Not any pub has') }}
+            <span class="ml-1" v-if="!!selectedDish">
+              {{ selectedDish.name }}
+            </span>
+          </v-row>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn class="text-capitalize" outlined text @click="onCloseDialog">
+            Close
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-row>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import NewDish from '@/components/Pub/NewDish'
+import axios from 'axios'
 
 export default {
   components: { NewDish },
@@ -149,28 +241,15 @@ export default {
     return {
       loading: false,
       error: null,
-      tab: 'Buffet',
-      tabs: [
-        {
-          text: 'Buffet',
-          src:
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRyBCykvDB0y4AliS4QHkODIziiBXTB4niLJA&usqp=CAU'
-        },
-        {
-          text: 'Sushi',
-          src:
-            'https://vinmec-prod.s3.amazonaws.com/images/20200410_153038_287034_sushi-la-gi.max-1800x1800.jpg'
-        },
-        {
-          text: 'Barbecue',
-          src:
-            'https://nghebep.com/wp-content/uploads/2019/02/cac-mon-nuong-duoc-yeu-thich.jpg'
-        }
-      ],
+      tab: 1,
       onboarding: 0,
       search: '',
       loadingDish: false,
-      items: ['Bách Khoa', 'Hai Bà Trưng', 'Trần Duy Hưng']
+      items: ['Bách Khoa', 'Hai Bà Trưng', 'Trần Duy Hưng'],
+      pubs: [],
+      loadingPub: false,
+      dialog: false,
+      selectedDish: null
     }
   },
   computed: mapGetters('pub', ['dishes', 'categories']),
@@ -198,6 +277,27 @@ export default {
         this.error = err.toString()
       }
       this.loadingDish = false
+    },
+    async fetchPub(dishId) {
+      this.loadingPub = true
+      try {
+        let url = `user/dish/${dishId}/pub/store`
+        const response = await axios.get(url)
+        this.pubs = response.data.data.data
+      } catch (err) {
+        this.error = err.toString()
+      }
+      this.loadingPub = false
+    },
+    async onSelectDish(dishId, i) {
+      this.selectedDish = this.dishes[i]
+      this.fetchPub(dishId)
+      this.dialog = true
+    },
+    onCloseDialog() {
+      this.dialog = false
+      this.selectedDish = null
+      this.pubs = []
     }
   }
 }
