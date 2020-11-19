@@ -132,8 +132,18 @@ export default {
         formData.append('image', this.image)
         formData.append('category', this.category)
         await this.createDish(formData)
+        this.$swal({
+          icon: 'success',
+          title: this.$t('Success'),
+          text: this.$t('Update successfully!')
+        })
       } catch (err) {
         this.error = err.toString()
+        this.$swal({
+          icon: 'error',
+          title: this.$t('Error'),
+          text: this.error
+        })
       }
       this.loading = false
       this.dialog = false

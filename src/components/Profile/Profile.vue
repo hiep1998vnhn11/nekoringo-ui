@@ -231,6 +231,11 @@ export default {
         await this.getUser()
       } catch (err) {
         this.error = err.toString()
+        this.$swal({
+          icon: 'erorr',
+          title: this.$t('Error'),
+          text: this.error
+        })
       }
       this.name = this.phone = ''
       this.image = this.url = null

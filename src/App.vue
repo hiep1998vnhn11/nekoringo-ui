@@ -1,7 +1,11 @@
 <template>
   <v-app id="app">
     <v-app-bar color="elevation-1" app>
-      <v-toolbar-title>Application</v-toolbar-title>
+      <v-toolbar-title>
+        <router-link :to="{name: 'Home'}">
+          <img width="50" height="50" src="./assets/logo.png" class="mt-3"/>
+        </router-link>
+      </v-toolbar-title>
       <v-spacer />
       <v-btn
         text
