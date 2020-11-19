@@ -376,10 +376,6 @@ export default {
       this.loadingChange = null
     },
     async onChangeDishes() {
-      if (this.dishes.data.length) {
-        this.dialog = true
-        return
-      }
       this.dialog = this.loading = true
       try {
         await this.getDishes({ category: 0, page: this.page })
