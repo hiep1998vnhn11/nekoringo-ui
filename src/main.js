@@ -15,6 +15,8 @@ Vue.mixin(mixin)
 axios.defaults.baseURL = process.env.VUE_APP_SERVER_BASE_URL
 Vue.use(VueSweetalert2)
 
+console.log(`server Api: ${process.env.VUE_APP_SERVER_BASE_URL}`)
+
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (!store.getters['user/isLoggedIn']) {
