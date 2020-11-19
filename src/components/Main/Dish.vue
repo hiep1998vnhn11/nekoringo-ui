@@ -25,6 +25,7 @@
           </v-container>
         </v-img>
       </v-card>
+      <new-category @refetch-data="fetchCategories" />
     </v-col>
     <v-col cols="9">
       <v-card tile outlined>
@@ -248,10 +249,14 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import NewDish from '@/components/Pub/NewDish'
+import NewCategory from './NewCategory'
 import axios from 'axios'
 
 export default {
-  components: { NewDish },
+  components: {
+    NewDish,
+    NewCategory
+  },
   data() {
     return {
       loading: false,
@@ -266,7 +271,8 @@ export default {
       dialog: false,
       selectedDish: null,
       page: 1,
-      pagePub: 1
+      pagePub: 1,
+      categoryDialog: false
     }
   },
   computed: mapGetters('pub', ['dishes', 'categories']),
@@ -316,6 +322,7 @@ export default {
       this.fetchPub(dishId)
       this.dialog = true
     },
+    async onAddCategory() {},
     onCloseDialog() {
       this.dialog = false
       this.selectedDish = null
