@@ -257,7 +257,7 @@ export default {
       this.email = this.videoPath = this.mapPath = ''
       this.image = this.imageUrl = null
       this.$refs.form.resetValidation()
-      this.loading = false
+      this.loading = this.preview = false
     }
   }
 }

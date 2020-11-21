@@ -1,5 +1,5 @@
 <template>
-  <container>
+  <v-container>
     <v-row no-gutters>
       <v-col cols="2" width="200">
         <v-hover v-slot="{ hover }">
@@ -71,7 +71,7 @@
         ></iframe>
       </v-col>
     </v-row>
-  </container>
+  </v-container>
 </template>
 
 <script>
