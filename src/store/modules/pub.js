@@ -35,14 +35,12 @@ const actions = {
     commit('SET_CATEGORIES', response.data.data)
   },
   async createPub({ commit }, formData) {
-    console.log(formData)
     let url = 'user/pub/create'
     const response = await axios.post(url, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     })
-    console.log(response)
     commit('CREATE_PUB', response.data.data)
   },
   async getAllPub({ commit }, param) {
@@ -90,6 +88,11 @@ const actions = {
     let url = `/user/pub/${param.pubId}/dish/${param.hasDishId}/delete`
     const response = await axios.post(url)
     commit('DELETE_DISH', response.data.data)
+  },
+  async deletePub({ commit }, pubId) {
+    let url = `/user/pub/${pubId}/delete`
+    await axios.post(url)
+    commit('DELETE_PUB', pubId)
   }
 }
 
@@ -98,7 +101,7 @@ const mutations = {
     state.paramPub = pub
   },
   CREATE_PUB: function(state, pub) {
-    state.pubs.push(pub)
+    state.pubs = [pub, ...state.pubs]
   },
   SET_ALL_PUB: function(state, pubs) {
     state.pubs = pubs
@@ -110,7 +113,7 @@ const mutations = {
     state.dishes = dishes
   },
   CREATE_DISH: function(state, dish) {
-    state.dishes.unshift(dish)
+    state.dishes = [dish, ...state.dishes]
   },
   SET_CATEGORIES: function(state, categories) {
     state.categories = categories
@@ -124,7 +127,10 @@ const mutations = {
     )
   },
   ADD_DISH: function(state, dish) {
-    state.paramDishes.data = state.paramDishes.data.push(dish)
+    state.paramDishes.data = [dish, ...state.paramDishes.data]
+  },
+  DELETE_PUB: function(state, pubId) {
+    state.myPubs = state.myPubs.filter(pub => pub.id !== pubId)
   }
 }
 

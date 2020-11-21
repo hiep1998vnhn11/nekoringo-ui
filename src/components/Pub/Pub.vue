@@ -43,6 +43,16 @@
                 >
                   <v-icon size="15" color="primary">mdi-pencil</v-icon>
                 </v-btn>
+
+                <v-btn
+                  v-if="current"
+                  small
+                  icon
+                  style="position: absolute; right: 40px"
+                  @click="confirmDeletePubDialog = true"
+                >
+                  <v-icon size="15" color="error">mdi-trash-can</v-icon>
+                </v-btn>
               </v-col>
             </v-row>
           </v-card-text>
@@ -553,6 +563,41 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-dialog v-model="confirmDeletePubDialog" max-width="500">
+      <v-card :loading="loadingDeletePub">
+        <v-card-title>
+          {{ $t('Are you sure?') }}
+          <v-spacer />
+          <v-btn
+            icon
+            primary="grey lighten-3"
+            @click="confirmDeletePubDialog = false"
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-card-title>
+        <v-card-text class="text-body-1">
+          {{
+            $t(
+              'Are you sure about DELETE this pub? This pub will never be able to Recreate again!'
+            )
+          }}
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn class="error text-capitalize" @click="onDeletePub">
+            {{ $t('Save') }}
+          </v-btn>
+          <v-btn
+            class="primary text-capitalize"
+            @click="confirmDeletePubDialog = false"
+          >
+            {{ $t('Cancel') }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -587,7 +632,9 @@ export default {
       changeInfo: false,
       dialogComment: false,
       loadingComment: false,
-      show: false
+      show: false,
+      loadingDeletePub: false,
+      confirmDeletePubDialog: false
     }
   },
   computed: {
@@ -611,7 +658,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('pub', ['getParamPub']),
+    ...mapActions('pub', ['getParamPub', 'deletePub']),
     async onSaveChange() {
       this.loadingChange = true
       try {
@@ -788,6 +835,26 @@ export default {
         })
         await this.fetchData()
       } catch (err) {
+        this.$swal({
+          icon: 'error',
+          title: this.$t('Error'),
+          text: err.toString()
+        })
+      }
+    },
+    async onDeletePub() {
+      this.loadingDeletePub = true
+      try {
+        await this.deletePub(this.paramPub.id)
+        this.$swal({
+          icon: 'error',
+          title: this.$t('Error'),
+          text: this.$t('Delete Pub successfully!')
+        })
+        this.loadingDeletePub = false
+        this.$router.push({ name: 'Profile' })
+      } catch (err) {
+        this.loadingDeletePub = false
         this.$swal({
           icon: 'error',
           title: this.$t('Error'),
