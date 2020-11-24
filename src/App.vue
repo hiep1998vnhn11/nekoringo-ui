@@ -2,10 +2,21 @@
   <v-app id="app">
     <v-app-bar color="elevation-1" app>
       <v-toolbar-title>
-        <router-link :to="{name: 'Home'}">
-          <img width="50" height="50" src="./assets/logo.png" class="mt-3"/>
+        <router-link :to="{ name: 'Home' }">
+          <img width="50" height="50" src="./assets/logo.png" class="mt-3" />
         </router-link>
       </v-toolbar-title>
+      <v-col cols="2">
+        <v-select
+          v-model="$i18n.locale"
+          :items="langs"
+          menu-props="auto"
+          :label="$t('common.select_lang')"
+          hide-details
+          prepend-icon="mdi-earth"
+        >
+        </v-select>
+      </v-col>
       <v-spacer />
       <v-btn
         text
@@ -93,22 +104,23 @@
     <v-divider />
     <v-footer class="grey lighten-3">
       <v-row>
-        <v-col cols="4" class="text-center">
+        <v-col cols="3" class="text-center">
           <div>{{ $t('Discovery') }}</div>
           <div>{{ $t('Comment') }}</div>
           <div>{{ $t('Collection') }}</div>
           <div>{{ $t('Rule') }}</div>
         </v-col>
-        <v-col cols="4" class="text-center">
+        <v-col cols="3" class="text-center">
           <div>{{ $t('Introduction') }}</div>
           <div>{{ $t('Support') }}</div>
           <div>{{ $t('Feedback') }}</div>
         </v-col>
-        <v-col cols="4" class="text-center">
+        <v-col cols="3" class="text-center">
           <div>{{ $t('Login') }}</div>
           <div>FaceBook</div>
           <div>Intagram</div>
         </v-col>
+        <v-col cols="3" class="text-center"> </v-col>
       </v-row>
     </v-footer>
   </v-app>
@@ -137,7 +149,21 @@ export default {
   },
   data() {
     return {
-      expand: false
+      expand: false,
+      langs: [
+        {
+          text: 'Tiếng Việt',
+          value: 'vi'
+        },
+        {
+          text: 'English',
+          value: 'en'
+        },
+        {
+          text: '日本語',
+          value: 'ja'
+        }
+      ]
     }
   }
 }
