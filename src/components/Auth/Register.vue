@@ -76,6 +76,7 @@
 
 <script>
 import axios from 'axios'
+import { mapActions } from 'vuex'
 export default {
   data() {
     return {
@@ -120,6 +121,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions('user', ['login']),
     async onRegister() {
       if (
         !this.name ||
@@ -141,13 +143,25 @@ export default {
       try {
         const url = '/auth/register'
         await axios.post(url, user)
-        this.loading = false
         this.dialog = false
-        this.$emit('success')
+        await this.$store.dispatch(
+          'user/login',
+          {
+            email: this.email,
+            password: this.password
+          },
+          { root: true }
+        )
+        this.$router.push({ name: 'Home' })
       } catch (err) {
         this.error = err.response
-        this.loading = false
+        this.$swal({
+          icon: 'error',
+          title: this.$t('Error'),
+          text: this.error
+        })
       }
+      this.loading = false
     }
   }
 }
