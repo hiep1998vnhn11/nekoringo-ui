@@ -69,11 +69,11 @@
         <v-divider />
         <v-card-text>
           <v-row v-if="loading">
-            <v-col v-for="n in 4" :key="n">
+            <v-col cols="3" v-for="n in 8" :key="n">
               <v-skeleton-loader
                 class="mx-auto"
                 max-width="200"
-                max-height="150"
+                max-height="170"
                 type="card"
               ></v-skeleton-loader>
             </v-col>
@@ -86,11 +86,11 @@
             >
               <v-card flat v-if="loadingDish">
                 <v-row>
-                  <v-col v-for="n in 4" :key="n">
+                  <v-col cols="3" v-for="n in 8" :key="n">
                     <v-skeleton-loader
                       class="mx-auto"
                       max-width="200"
-                      max-height="150"
+                      max-height="170"
                       type="card"
                     ></v-skeleton-loader>
                   </v-col>
@@ -141,7 +141,9 @@
                         </v-img>
                       </v-avatar>
                     </v-hover>
-                    {{ dish.name }}
+                    <div class="text-center">
+                      {{ dish.name }}
+                    </div>
                   </v-col>
                 </v-row>
               </v-card>

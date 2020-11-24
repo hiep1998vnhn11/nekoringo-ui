@@ -1,10 +1,11 @@
 <template>
   <v-container>
     <v-row v-if="loading">
-      <v-col cols="4" v-for="n in 3" :key="n">
+      <v-col cols="4" v-for="n in 6" :key="n">
         <v-skeleton-loader
           class="mx-auto"
           max-width="300"
+          max-height="240"
           type="card"
         ></v-skeleton-loader>
       </v-col>
@@ -23,7 +24,7 @@
         >
           <v-hover v-slot="{ hover }">
             <v-avatar
-              class="avatar-outlined"
+              class="avatar-outlined mb-2"
               tile
               color="grey"
               height="200"
@@ -42,13 +43,15 @@
               </v-img>
             </v-avatar>
           </v-hover>
-          {{ pub.name }}
+          <span class="text-body-1 mt-1">
+            {{ pub.name }}
+          </span>
         </v-card>
       </v-col>
     </v-row>
     <v-row justify="center">
       <v-col cols="8">
-        <v-container class="max-width" v-show="!loading">
+        <v-container class="max-width">
           <v-pagination
             v-model="page"
             class="my-4"

@@ -1,10 +1,30 @@
 <template>
   <v-container>
-    <v-skeleton-loader
-      v-if="loading"
-      class="mx-auto"
-      type="card"
-    ></v-skeleton-loader>
+    <v-row v-if="loading">
+      <v-col cols="12">
+        <v-skeleton-loader class="mx-auto" type="card"></v-skeleton-loader>
+      </v-col>
+      <v-col cols="4" v-for="n in 3" :key="n">
+        <v-skeleton-loader class="mx-auto" type="card"></v-skeleton-loader>
+      </v-col>
+      <v-col cols="12">
+        <v-skeleton-loader class="mx-auto" type="card"></v-skeleton-loader>
+      </v-col>
+      <v-col cols="2">
+        <v-skeleton-loader
+          height="100"
+          class="mx-auto"
+          type="card"
+        ></v-skeleton-loader>
+      </v-col>
+      <v-col cols="10">
+        <v-skeleton-loader
+          height="500"
+          class="mx-auto"
+          type="card"
+        ></v-skeleton-loader>
+      </v-col>
+    </v-row>
     <v-row no-gutters v-else-if="!!paramPub">
       <v-col cols="2" width="200">
         <v-hover v-slot="{ hover }">
@@ -27,7 +47,7 @@
         <v-card height="200" outlined tile class="mx-auto">
           <v-card-text class="text-body-1">
             <v-row no-gutters>
-              <v-col cols="6">
+              <v-col cols="10">
                 <p>{{ $t('Name') }} : {{ paramPub.name }}</p>
                 <p>{{ $t('Email:') }} {{ paramPub.main_email }}</p>
                 <p>{{ $t('Address:') }} {{ paramPub.address }}</p>
@@ -162,8 +182,8 @@
         ></iframe>
       </v-col>
     </v-row>
-    <v-divider />
-    <dish />
+    <v-divider class="mt-2" />
+    <dish class="mt-2" />
     <v-divider />
     <v-row v-if="!!paramPub">
       <v-col cols="2">
