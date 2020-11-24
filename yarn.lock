@@ -5814,11 +5814,6 @@ lodash.mergewith@^4.0.0:
   resolved "https://registry.yarnpkg.com/lodash.mergewith/-/lodash.mergewith-4.6.2.tgz#617121f89ac55f59047c7aec1ccd6654c6590f55"
   integrity sha512-GK3g5RPZWTRSeLSpgP8Xhra+pnjBC56q9FZYe1d5RN3TJ35dbkGy3YqBSMbyCrlbi+CM9Z3Jk5yTL7RCsqboyQ==
 
-lodash.orderby@^4.6.0:
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/lodash.orderby/-/lodash.orderby-4.6.0.tgz#e697f04ce5d78522f54d9338b32b81a3393e4eb3"
-  integrity sha1-5pfwTOXXhSL1TZM4syuBozk+TrM=
-
 lodash.rest@^4.0.0:
   version "4.0.5"
   resolved "https://registry.yarnpkg.com/lodash.rest/-/lodash.rest-4.0.5.tgz#954ef75049262038c96d1fc98b28fdaf9f0772aa"
@@ -5828,11 +5823,6 @@ lodash.sortby@^4.7.0:
   version "4.7.0"
   resolved "https://registry.yarnpkg.com/lodash.sortby/-/lodash.sortby-4.7.0.tgz#edd14c824e2cc9c1e0b0a1b42bb5210516a42438"
   integrity sha1-7dFMgk4sycHgsKG0K7UhBRakJDg=
-
-lodash.throttle@^4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/lodash.throttle/-/lodash.throttle-4.1.1.tgz#c23e91b710242ac70c37f1e1cda9274cc39bf2f4"
-  integrity sha1-wj6RtxAkKscMN/HhzaknTMOb8vQ=
 
 lodash.uniq@^4.5.0:
   version "4.5.0"
@@ -9483,14 +9473,6 @@ vm-browserify@^1.0.1:
   resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-1.1.2.tgz#78641c488b8e6ca91a75f511e7a3b32a86e5dda0"
   integrity sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==
 
-vue-agile@^1.1.3:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/vue-agile/-/vue-agile-1.1.3.tgz#534220cae74cf1d2033d42b295f5966fe97832c8"
-  integrity sha512-RnvKK6ZoXNAk2Q6h/ux+bhqYs4uflFew3xcsNfysQa+GVLKHfizAaeKHJndqGjSXA+qg+kJuYd4RDY/ry8RY4w==
-  dependencies:
-    lodash.orderby "^4.6.0"
-    lodash.throttle "^4.1.1"
-
 vue-eslint-parser@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/vue-eslint-parser/-/vue-eslint-parser-2.0.3.tgz#c268c96c6d94cfe3d938a5f7593959b0ca3360d1"
@@ -9581,15 +9563,15 @@ vue-template-es2015-compiler@^1.5.3, vue-template-es2015-compiler@^1.6.0:
   resolved "https://registry.yarnpkg.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.9.1.tgz#1ee3bc9a16ecbf5118be334bb15f9c46f82f5825"
   integrity sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==
 
+vue-toasted@^1.1.28:
+  version "1.1.28"
+  resolved "https://registry.yarnpkg.com/vue-toasted/-/vue-toasted-1.1.28.tgz#dbabb83acc89f7a9e8765815e491d79f0dc65c26"
+  integrity sha512-UUzr5LX51UbbiROSGZ49GOgSzFxaMHK6L00JV8fir/CYNJCpIIvNZ5YmS4Qc8Y2+Z/4VVYRpeQL2UO0G800Raw==
+
 vue@^2.5.2:
   version "2.6.12"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.12.tgz#f5ebd4fa6bd2869403e29a896aed4904456c9123"
   integrity sha512-uhmLFETqPPNyuLLbsKz6ioJ4q7AZHzD8ZVFNATNyICSZouqP2Sz0rotWQC8UNBF6VGSCs5abnKJoStA6JbCbfg==
-
-vueperslides@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/vueperslides/-/vueperslides-3.1.0.tgz#5b9ac6eff4eaff13d9523c1d92daf335bc365d28"
-  integrity sha512-SjM5h4Mix7XUNZq8GcR8tUyhyp7hkdFMfq7pTajxejcqJXmenHRq7S6LTZWZi3tv669XkknIUaUC4BaUw9pUBg==
 
 vuetify@^2.3.13:
   version "2.3.13"
