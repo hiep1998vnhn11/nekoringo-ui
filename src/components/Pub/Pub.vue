@@ -34,7 +34,7 @@
                 <div
                   v-if="hover"
                   class="d-flex transition-fast-in-fast-out orange darken-2 v-card--reveal white--text"
-                  style="height: 200px; width: 200px;"
+                  style="height: 200px; width: 200px"
                 >
                   {{ paramPub.description }}
                 </div>
@@ -163,7 +163,7 @@
             width="333"
             height="250"
             frameborder="0"
-            style="border:0;"
+            style="border: 0"
             allowfullscreen=""
             aria-hidden="false"
             tabindex="0"
@@ -175,7 +175,7 @@
           width="333"
           height="250"
           frameborder="0"
-          style="border:0;"
+          style="border: 0"
           allowfullscreen=""
           aria-hidden="false"
           tabindex="0"
@@ -198,7 +198,7 @@
               class="ml-n3"
               readonly
             ></v-rating>
-            {{ paramPub.rate_avrg }} / 5
+            {{ paramPub.rate_avrg | toFix }} / 5
           </v-card-text>
           <v-divider />
           <v-card-actions>
@@ -250,7 +250,7 @@
                     <br />
                     <router-link
                       v-if="!isLoggedIn"
-                      style="text-decoration: none;"
+                      style="text-decoration: none"
                       :to="{ name: 'Login' }"
                     >
                       {{ $t('Please login to rating ...') }}
@@ -317,7 +317,7 @@
                     <br />
                     <router-link
                       v-if="!isLoggedIn"
-                      style="text-decoration: none;"
+                      style="text-decoration: none"
                       :to="{ name: 'Login' }"
                     >
                       {{ $t('Please login to comment ...') }}
@@ -355,6 +355,16 @@
                       @click="deleteComment(comment.id)"
                     >
                       <v-icon size="15" color="error">mdi-trash-can</v-icon>
+                    </v-btn>
+                    <v-btn
+                      icon
+                      small
+                      v-if="!!currentUser && currentUser.id !== comment.user.id"
+                      @click="reportComment(comment.id)"
+                    >
+                      <v-icon size="15" color="warning"
+                        >mdi-message-alert</v-icon
+                      >
                     </v-btn>
                   </v-toolbar>
                   <v-card-text>
@@ -633,6 +643,8 @@ export default {
     return {
       loading: false,
       loadingRating: false,
+      loadingReport: false,
+      loadingDelete: false,
       error: null,
       dialog: false,
       content: '',
@@ -829,6 +841,7 @@ export default {
       this.changeInfo = true
     },
     async deleteComment(commentId) {
+      this.loadingDelete = true
       try {
         await axios.post(`/user/comment/${commentId}/delete`)
         this.$swal({
@@ -844,6 +857,35 @@ export default {
           text: err.toString()
         })
       }
+      this.loadingDelete = false
+    },
+
+    async reportComment(commentId) {
+      this.loadingReport = true
+      try {
+        await axios.post(`/user/comment/${commentId}/report`)
+        this.$swal({
+          icon: 'success',
+          title: this.$t('Success'),
+          text: this.$t('Report comment successfully!')
+        })
+        await this.fetchData()
+      } catch (err) {
+        if (err.response.status === 422) {
+          this.$swal({
+            icon: 'error',
+            title: this.$t('Error'),
+            text: err.response.data.message
+          })
+        } else {
+          this.$swal({
+            icon: 'error',
+            title: this.$t('Error'),
+            text: err.toString()
+          })
+        }
+      }
+      this.loadingReport = false
     },
     async deleteRating(ratingId) {
       try {
@@ -898,6 +940,11 @@ export default {
           ''
         this.image = this.imageUrl = null
       }
+    }
+  },
+  filters: {
+    toFix(value) {
+      return value.toFixed(2)
     }
   }
 }
