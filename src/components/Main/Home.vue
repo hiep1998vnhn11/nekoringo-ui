@@ -2,16 +2,39 @@
   <v-container>
     <v-row>
       <v-col cols="6" class="text-center">
-        <p class="text-h4 mt-16">{{ $t('Enjoy your meal with Nekoringo') }}</p>
-        <v-btn
-          outlined
-          class="black text-capitalize mt-10"
-          x-large
-          color="white"
-          :to="{ name: 'NewPub' }"
-        >
-          {{ $t('Participle') }}
-        </v-btn>
+        <div v-if="currentUser && currentUser.roles[0].name === 'publican'">
+          <p class="text-h4 mt-16">
+            {{
+              $t(
+                "Thank for your paticipation! You are one of Nekoringo's Publican"
+              )
+            }}
+          </p>
+          <v-btn
+            outlined
+            class="black text-capitalize mt-10"
+            x-large
+            color="white"
+            :to="{ name: 'NewPub' }"
+          >
+            {{ $t('Create a new Pub now!') }}
+          </v-btn>
+        </div>
+        <div v-else>
+          <p class="text-h4 mt-16">
+            {{ $t('Enjoy your meal with Nekoringo') }}
+          </p>
+          <v-btn
+            outlined
+            class="black text-capitalize mt-10"
+            x-large
+            color="white"
+            @click="onParticipate"
+            :loading="requesting"
+          >
+            {{ $t('Participle') }}
+          </v-btn>
+        </div>
       </v-col>
       <v-col cols="6">
         <v-card flat tile>
@@ -78,7 +101,7 @@
                   <div
                     v-if="hover"
                     class="d-flex transition-fast-in-fast-out blue lighten-4 v-card--reveal black--text text-h6"
-                    style="height: 200px; width: 350px;"
+                    style="height: 200px; width: 350px"
                   >
                     <v-container>{{ pub.description }}</v-container>
                   </div>
@@ -98,6 +121,7 @@
 import { mapActions, mapGetters } from 'vuex'
 import NewDish from '@/components/Pub/NewDish'
 import DishComponent from './Dish'
+import axios from 'axios'
 
 export default {
   components: {
@@ -107,6 +131,7 @@ export default {
   data() {
     return {
       loading: false,
+      requesting: false,
       error: null,
       length: [
         {
@@ -148,7 +173,10 @@ export default {
       onboarding: 0
     }
   },
-  computed: mapGetters('pub', ['pubs']),
+  computed: {
+    ...mapGetters('pub', ['pubs']),
+    ...mapGetters('user', ['currentUser'])
+  },
   mounted() {
     this.fetchData()
     setInterval(this.next, 3000)
@@ -172,6 +200,26 @@ export default {
         this.error = err.toString()
       }
       this.loading = false
+    },
+    async onParticipate() {
+      this.requesting = true
+      try {
+        const response = await axios.post('/user/request/publican/create')
+        this.$swal({
+          icon: 'success',
+          title: 'Success',
+          text: response.data
+            ? response.data.message
+            : this.$t('Make publican request successfully!')
+        })
+      } catch (err) {
+        this.$swal({
+          icon: 'error',
+          title: 'Error',
+          text: err.response ? err.response.data.message : err.toString()
+        })
+      }
+      this.requesting = false
     }
   }
 }

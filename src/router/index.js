@@ -4,6 +4,7 @@ import Login from '@/components/Auth/Login'
 import Home from '@/components/Main/Home'
 import Pub from '@/components/Pub/Pub'
 import Profile from '@/components/Profile/Profile'
+import Order from '@/components/Profile/Order'
 import NewPub from '@/components/Pub/NewPub'
 import AllPub from '@/components/Pub/AllPub'
 
@@ -33,6 +34,14 @@ export default new Router({
       }
     },
     {
+      path: '/order',
+      name: 'Order',
+      component: Order,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
       path: '/category',
       name: 'AllPub',
       component: AllPub
@@ -47,7 +56,8 @@ export default new Router({
       name: 'NewPub',
       component: NewPub,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        requiresPublican: true
       }
     }
   ]

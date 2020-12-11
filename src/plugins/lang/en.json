@@ -184,5 +184,12 @@
   "My Pubs": "My pubs",
   "Pick an avatar": "Pick an avatar",
   "Avatar": "Avatar",
-  "This pub does not have any Rating.": "This pub does not have any Rating."
+  "This pub does not have any Rating.": "This pub does not have any Rating.",
+  "Thank for your paticipation! You are one of Nekoringo's Publican": "Thank for your participation! You are one of Nekoringo's Publican",
+  "Create a new Pub now!": "Create a new pub now!",
+  "Register Successfully! Please login": "Register Successfully! Please login",
+  "Password": "Password",
+  "Password Confirm": "Password confirmation",
+  "Make publican request successfully!": "Make publican request successfully!",
+  "Are you sure about DELETE this pub? This pub will never be able to Recreate again!": "Are you sure about DELETE this pub? This pub will never be able to Recreate again!"
 }

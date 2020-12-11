@@ -73,6 +73,18 @@
                 >
                   <v-icon size="15" color="error">mdi-trash-can</v-icon>
                 </v-btn>
+                <v-btn
+                  v-else-if="
+                    !!currentUser && currentUser.roles[0].name !== 'publican'
+                  "
+                  text
+                  style="position: absolute; right: 15px"
+                  class="text-capitalize primary--text"
+                  @click="orderDialog = true"
+                >
+                  {{ $t('Order a meal') }}
+                  <v-icon class="ml-3">mdi-store</v-icon>
+                </v-btn>
               </v-col>
             </v-row>
           </v-card-text>
@@ -218,8 +230,16 @@
             <v-spacer />
             {{ $t('Review') }}
             <v-spacer />
+            <span
+              v-if="
+                !!currentUser && paramPub.isOrder === false && tab === 'rating'
+              "
+              class="text-caption"
+            >
+              {{ $t('Please order to review!') }}
+            </span>
             <v-btn
-              v-if="!!currentUser && tab === 'rating'"
+              v-else-if="!!currentUser && tab === 'rating'"
               text
               outlined
               class="text-capitalize"
@@ -628,6 +648,43 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-dialog v-model="orderDialog" max-width="300">
+      <v-card :loading="ordering">
+        <v-card-title>
+          <v-spacer />
+          {{ $t('Order a meal') }}
+          <v-spacer />
+          <v-btn icon class="grey lighten-3" @click="orderDialog = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-card-title>
+        <v-container>
+          {{ $t('Select day and click Save to order') }}
+          <span v-if="orderDate">
+            {{ $t('Your selected: ') }}
+
+            <span class="font-weight-bold">
+              {{ orderDate }}
+            </span>
+          </span>
+          <v-date-picker
+            v-model="orderDate"
+            color="green lighten-1"
+          ></v-date-picker>
+        </v-container>
+        <v-divider />
+        <v-card-actions>
+          <v-spacer />
+          <v-btn class="primary text-capitalize" @click="onSaveOrder">
+            Save
+          </v-btn>
+          <v-btn class="error text-capitalize" @click="orderDialog = false">
+            Close
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -641,6 +698,9 @@ export default {
   },
   data() {
     return {
+      orderDialog: false,
+      ordering: false,
+      orderDate: null,
       loading: false,
       loadingRating: false,
       loadingReport: false,
@@ -923,6 +983,26 @@ export default {
           text: err.toString()
         })
       }
+    },
+    async onSaveOrder() {
+      this.ordering = true
+      try {
+        await axios.post(`/user/pub/${this.paramPub.id}/order`, {
+          time: this.orderDate
+        })
+        this.$swal({
+          icon: 'success',
+          title: 'Order successfully!'
+        })
+      } catch (err) {
+        this.$swal({
+          icon: 'error',
+          title: 'Error',
+          text: err.response ? err.response.data.message : err.toString()
+        })
+      }
+      this.orderData = null
+      this.ordering = this.orderDialog = false
     }
   },
   mounted() {

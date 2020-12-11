@@ -9,11 +9,13 @@ import i18n from '@/plugins/i18n'
 import mixin from '@/utils/mixin'
 import axios from 'axios'
 import VueSweetalert2 from 'vue-sweetalert2'
+import Notifications from 'vue-notification'
 
 Vue.config.productionTip = false
 Vue.mixin(mixin)
 axios.defaults.baseURL = process.env.VUE_APP_SERVER_BASE_URL
 Vue.use(VueSweetalert2)
+Vue.use(Notifications)
 
 console.log(`server Api: ${process.env.VUE_APP_SERVER_BASE_URL}`)
 
@@ -28,6 +30,14 @@ router.beforeEach((to, from, next) => {
     }
   } else if (to.matched.some(record => record.meta.requiresVisitor)) {
     if (store.getters['user/isLoggedIn']) {
+      next({
+        name: 'Home'
+      })
+    } else {
+      next()
+    }
+  } else if (to.matched.some(record => record.meta.requiresPublican)) {
+    if (store.getters['user/currentUser'].roles[0].name === 'publican') {
       next({
         name: 'Home'
       })

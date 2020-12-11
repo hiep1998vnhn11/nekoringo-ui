@@ -62,18 +62,18 @@
       >
         {{ $t('signin') }}
       </v-btn>
-      <div class="show-noti-app-bar">
+      <div class="show-noti-app-bar" v-if="currentUser">
         <v-expand-transition right>
           <v-card
             v-click-outside="{
               handler: onClickOutsideWithConditional,
-              closeConditional
+              closeConditional,
             }"
             v-show="expand"
             width="250"
             class="mx-auto"
           >
-            <v-container>
+            <v-container v-if="currentUser">
               <v-btn
                 text
                 block
@@ -86,9 +86,19 @@
                 text
                 block
                 class="text-capitalize"
+                v-if="currentUser.roles[0].name === 'publican'"
                 :to="{ name: 'NewPub' }"
               >
                 {{ $t('create a new pub') }}
+              </v-btn>
+              <v-btn
+                text
+                block
+                class="text-capitalize"
+                v-if="currentUser.roles[0].name === 'publican'"
+                :to="{ name: 'Order' }"
+              >
+                {{ $t('pub orders') }}
               </v-btn>
               <v-btn text block class="text-capitalize" @click="signOut">
                 {{ $t('signout') }}
