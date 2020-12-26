@@ -153,6 +153,7 @@ export default {
         { text: 'Name', value: 'user.name' },
         { text: 'Email', value: 'user.email' },
         { text: 'Pub', value: 'pub.name' },
+        { text: 'amount', value: 'amount' },
         { text: 'time', value: 'time' },
         { text: 'Status', value: 'status' },
         { text: 'Created at', value: 'created_at' },
