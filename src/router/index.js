@@ -5,8 +5,10 @@ import Home from '@/components/Main/Home'
 import Pub from '@/components/Pub/Pub'
 import Profile from '@/components/Profile/Profile'
 import Order from '@/components/Profile/Order'
+import OrderList from '@/components/Profile/UserOrder'
 import NewPub from '@/components/Pub/NewPub'
 import AllPub from '@/components/Pub/AllPub'
+import Noti from '@/components/Main/Noti'
 
 Vue.use(Router)
 
@@ -37,6 +39,22 @@ export default new Router({
       path: '/order',
       name: 'Order',
       component: Order,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/order_list',
+      name: 'OrderList',
+      component: OrderList,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/notifications',
+      name: 'Notification',
+      component: Noti,
       meta: {
         requiresAuth: true
       }

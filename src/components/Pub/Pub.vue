@@ -649,7 +649,7 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="orderDialog" max-width="300">
+    <v-dialog v-model="orderDialog" max-width="700">
       <v-card :loading="ordering">
         <v-card-title>
           <v-spacer />
@@ -660,23 +660,44 @@
           </v-btn>
         </v-card-title>
         <v-container>
-          {{ $t('Select day and click Save to order') }}
-          <span v-if="orderDate">
+          <div>
+            {{ $t('Select day and click Save to order') }}
+          </div>
+          <span v-if="orderDate && orderTime">
             {{ $t('Your selected: ') }}
-
             <span class="font-weight-bold">
-              {{ orderDate }}
+              {{ orderTime }} {{ orderDate }}
             </span>
           </span>
-          <v-date-picker
-            v-model="orderDate"
-            color="green lighten-1"
-          ></v-date-picker>
+
+          <v-row>
+            <v-col cols="6">
+              {{ $t('Amount of people: ') }}
+            </v-col>
+            <v-col cols="6">
+              <v-text-field
+                label="Solo"
+                placeholder="Amount"
+                solo
+                v-model="amountPeople"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="6">
+              <v-time-picker format="ampm" v-model="orderTime"></v-time-picker>
+            </v-col>
+            <v-col cols="6">
+              <v-date-picker v-model="orderDate"></v-date-picker>
+            </v-col>
+          </v-row>
         </v-container>
         <v-divider />
         <v-card-actions>
           <v-spacer />
-          <v-btn class="primary text-capitalize" @click="onSaveOrder">
+          <v-btn
+            class="primary text-capitalize"
+            @click="onSaveOrder"
+            :disabled="!orderDate && !orderTime && !amountPeople"
+          >
             Save
           </v-btn>
           <v-btn class="error text-capitalize" @click="orderDialog = false">
@@ -690,17 +711,21 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import { Datetime } from 'vue-datetime'
 import axios from 'axios'
 import Dish from './Dish'
 export default {
   components: {
-    Dish
+    Dish,
+    'date-time': Datetime
   },
   data() {
     return {
       orderDialog: false,
       ordering: false,
       orderDate: null,
+      orderTime: null,
+      amountPeople: '',
       loading: false,
       loadingRating: false,
       loadingReport: false,
@@ -747,6 +772,9 @@ export default {
             this.text === this.paramPub.map_path ||
             this.text === this.paramPub.video_path
         : true
+    },
+    selectedDate() {
+      return new Date(`${this.orderDate} ${this.orderTime}`)
     }
   },
   methods: {
@@ -985,10 +1013,32 @@ export default {
       }
     },
     async onSaveOrder() {
+      // check valid time
+      let now = new Date()
+      if (this.selectedDate < now) {
+        this.$swal({
+          icon: 'error',
+          title: 'Error Time',
+          text: 'Please choose a future time!'
+        })
+        return
+      }
+      if (
+        this.amountPeople <= 0 &&
+        Number.isInteger(Number(this.amountPeople))
+      ) {
+        this.$swal({
+          icon: 'error',
+          title: 'Error Amount',
+          text: 'Please choose integer'
+        })
+        return
+      }
       this.ordering = true
       try {
         await axios.post(`/user/pub/${this.paramPub.id}/order`, {
-          time: this.orderDate
+          time: `${this.orderDate} ${this.orderTime}`,
+          amount: this.amountPeople
         })
         this.$swal({
           icon: 'success',
@@ -1001,7 +1051,8 @@ export default {
           text: err.response ? err.response.data.message : err.toString()
         })
       }
-      this.orderData = null
+      this.orderDate = this.orderTime = null
+      this.amountPeople = ''
       this.ordering = this.orderDialog = false
     }
   },

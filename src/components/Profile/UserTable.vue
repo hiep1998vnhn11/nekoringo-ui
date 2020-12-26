@@ -98,36 +98,6 @@
           </template>
           <span>Delete order</span>
         </v-tooltip>
-
-        <v-tooltip bottom v-if="item.status === 'pending'">
-          <template v-slot:activator="{ on, attrs }">
-            <v-icon
-              color="primary"
-              @click="acceptItem(item)"
-              dark
-              v-bind="attrs"
-              v-on="on"
-            >
-              mdi-check
-            </v-icon>
-          </template>
-          <span>Accept order</span>
-        </v-tooltip>
-
-        <v-tooltip bottom v-if="item.status === 'pending'">
-          <template v-slot:activator="{ on, attrs }">
-            <v-icon
-              color="orange"
-              @click="cancelItem(item)"
-              dark
-              v-bind="attrs"
-              v-on="on"
-            >
-              mdi-cancel
-            </v-icon>
-          </template>
-          <span>Cancel order</span>
-        </v-tooltip>
       </template>
     </v-data-table>
   </v-card>
@@ -150,8 +120,6 @@ export default {
           align: 'start',
           value: 'id'
         },
-        { text: 'Name', value: 'user.name' },
-        { text: 'Email', value: 'user.email' },
         { text: 'Pub', value: 'pub.name' },
         { text: 'time', value: 'time' },
         { text: 'Status', value: 'status' },

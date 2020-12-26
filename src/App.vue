@@ -78,6 +78,26 @@
                 text
                 block
                 class="text-capitalize"
+                :to="{ name: 'Notification' }"
+                v-if="currentUser.roles[0].name === 'viewer'"
+                @click="numberUnread = 0"
+              >
+                <v-badge
+                  bordered
+                  color="success"
+                  :content="numberUnread"
+                  v-if="numberUnread"
+                >
+                  {{ $t('Notifications') }}
+                </v-badge>
+                <span v-else>
+                  {{ $t('Notifications') }}
+                </span>
+              </v-btn>
+              <v-btn
+                text
+                block
+                class="text-capitalize"
                 :to="{ name: 'Profile' }"
               >
                 {{ $t('Profile') }}
@@ -99,6 +119,15 @@
                 :to="{ name: 'Order' }"
               >
                 {{ $t('pub orders') }}
+              </v-btn>
+              <v-btn
+                text
+                block
+                class="text-capitalize"
+                v-else
+                :to="{ name: 'OrderList' }"
+              >
+                {{ $t('orders list') }}
               </v-btn>
               <v-btn text block class="text-capitalize" @click="signOut">
                 {{ $t('signout') }}
@@ -138,11 +167,14 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import axios from 'axios'
+
 export default {
   name: 'App',
   computed: mapGetters('user', ['currentUser', 'isLoggedIn']),
   created() {
     if (!this.currentUser && this.isLoggedIn) this.getUser()
+    if (!this.numberUnread) this.fetNumberUnread()
   },
   methods: {
     ...mapActions('user', ['logout', 'getUser']),
@@ -155,6 +187,10 @@ export default {
     },
     closeConditional(e) {
       return this.expand
+    },
+    async fetNumberUnread() {
+      let response = await axios.post('/user/notification/get_number_unread')
+      this.numberUnread = response.data.data
     }
   },
   data() {
@@ -173,7 +209,8 @@ export default {
           text: '日本語',
           value: 'ja'
         }
-      ]
+      ],
+      numberUnread: 0
     }
   }
 }
