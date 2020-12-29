@@ -874,7 +874,7 @@ export default {
         })
         this.fetchData()
       } catch (err) {
-        this.error = err.toString()
+        this.error = err.response.data.message
         this.$swal({
           icon: 'error',
           title: 'Error',

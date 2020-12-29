@@ -191,5 +191,9 @@
   "Password": "Password",
   "Password Confirm": "Password confirmation",
   "Make publican request successfully!": "Make publican request successfully!",
-  "Are you sure about DELETE this pub? This pub will never be able to Recreate again!": "Are you sure about DELETE this pub? This pub will never be able to Recreate again!"
+  "Are you sure about DELETE this pub? This pub will never be able to Recreate again!": "Are you sure about DELETE this pub? This pub will never be able to Recreate again!",
+  "pub orders": "pub orders",
+  "Order a meal": "Order a meal",
+  "Select day and click Save to order": "Select day and click Save to order",
+  "Amount of people: ": "Amount of people: "
 }
