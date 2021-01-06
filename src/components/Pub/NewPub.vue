@@ -14,7 +14,7 @@
                 v-model="name"
                 :counter="60"
                 :label="`${$t('Name')} *`"
-                :rules="[v => !!v || $t('Required')]"
+                :rules="nameRules"
               ></v-text-field>
               <v-text-field
                 v-model="address"
@@ -187,6 +187,10 @@ export default {
         v =>
           v.indexOf('https://www.youtube.com/embed') === 0 ||
           _this.$t('Please input correct link to embedded the video')
+      ],
+      nameRules: [
+        v => !!v || _this.$t('Required'),
+        v => v.length >= 4 || _this.$t('Name must be at least 4 charater')
       ]
     }
   },
